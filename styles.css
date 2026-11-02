@@ -1,0 +1,124 @@
+/* ==========================================
+   Estilos generales y reset
+   ========================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #121212 !important;
+    color: #ffffff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ==========================================
+   Header / Navbar
+   ========================================== */
+.bg-gradient-dark {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 100%);
+    backdrop-filter: blur(5px);
+}
+
+.navbar-nav .nav-link {
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #e32b2b !important;
+}
+
+/* Ajustes del menú desplegable en pantallas móviles */
+@media (max-width: 991.88px) {
+    .navbar-collapse {
+        background-color: rgba(18, 18, 18, 0.98);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+        border: 1px solid #333;
+    }
+}
+
+/* ==========================================
+   Hero Section / Banner Principal
+   ========================================== */
+.hero-section {
+    min-height: 280px;
+    height: 40vh;
+    background-color: #1a1a1a; /* Color de reserva por si la imagen de fondo falla */
+    /* Para colocar tu foto principal desatada de fondo, descomenta la siguiente línea: */
+    /* background: url('img/Carta/Hamburguesa-Principal.jpg') center/cover no-repeat; */
+}
+
+.hero-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(18, 18, 18, 1) 100%);
+}
+
+/* ==========================================
+   Sección del Menú y Tarjetas
+   ========================================== */
+.menu-section {
+    background-color: #121212;
+}
+
+/* Tarjeta contenedora de hamburguesa */
+.custom-card {
+    height: 180px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Imagen de la hamburguesa dentro de la tarjeta */
+.custom-card img.card-img-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 6px;
+}
+
+/* Oscurecimiento del fondo de la tarjeta para legibilidad del texto */
+.card-img-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.85) 100%);
+    border-radius: 6px;
+}
+
+/* Sombra y tipografía del título del producto */
+.text-shadow {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9);
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================
+   Footer / Pie de página
+   ========================================== */
+footer {
+    background-color: #0d0d0d !important;
+}
+
+.footer-links a {
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #ffffff !important;
+}
+
+footer .bi {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+footer .bi:hover {
+    color: #ffffff !important;
+    transform: scale(1.15);
+}

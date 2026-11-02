@@ -12,13 +12,12 @@
 </head>
 <body class="bg-dark text-white">
 
-    <!-- Header / Navbar responsivo -->
+    <!-- Header / Barra de Navegación responsivo -->
     <header class="navbar navbar-expand-lg navbar-dark fixed-top bg-gradient-dark py-2 py-lg-3">
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand me-3" href="#">
-                <img src="" alt="">
-                <div class="logo-placeholder bg-secondary rounded" style="width: 45px; height: 30px;"></div>
+                <img src="img/Logo/Logo-Blanco.png" alt="Logo" class="img-fluid" style="height: 35px;">
             </a>
 
             <!-- Botón hamburguesa para desplegar menú en móvil -->
@@ -36,12 +35,10 @@
 
                 <div class="d-flex align-items-center justify-content-center justify-content-lg-end gap-3 pb-3 pb-lg-0">
                     <a href="#" class="text-white text-decoration-none">
-                        <!-- Imagen / Icono: Globo terráqueo/idioma -->
-                        <i class="bi bi-globe fs-5"></i>
+                        <img src="img/svg/World.svg" alt="Idioma" style="width: 20px; height: 20px;">
                     </a>
                     <button class="btn btn-danger rounded-pill px-3 py-1 fw-bold small d-flex align-items-center gap-2">
-                        <!-- Imagen / Icono: Carrito -->
-                        <i class="bi bi-cart-fill"></i>
+                        <img src="img/svg/Carrito.svg" alt="Carrito" style="width: 18px; height: 18px;">
                         <span>Carrito</span>
                     </button>
                 </div>
@@ -51,7 +48,6 @@
 
     <!-- Sección Hero / Banner Principal -->
     <section class="hero-section position-relative d-flex align-items-center pt-5">
-        <!-- Imagen: Fondo del hero con la hamburguesa sobre tabla de madera -->
         <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"></div>
         <div class="container position-relative z-1 pt-5 text-center text-md-start">
             <h1 class="display-4 fw-bold">Hamburguesas</h1>
@@ -60,18 +56,16 @@
 
     <!-- Sección del Menú de Hamburguesas -->
     <main class="menu-section py-4 py-md-5 position-relative">
-        <!-- Imagen: Textura/gráfico de fondo humo/sombras de la sección -->
         <div class="container">
             <h2 class="h1 fw-bold mb-4 text-center text-md-start">Hamburguesas</h2>
 
-            <!-- Grid adaptable: 1 col en móvil (cols-1), 2 en tablet (sm-2), 4 en escritorio (md-4) -->
+            <!-- Grid adaptable -->
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 g-md-4">
                 
                 <!-- Tarjeta 1 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Completa -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-sola/Hamburguesa-Completa.jpg" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Completa">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Completa</h5>
                         </div>
@@ -81,8 +75,7 @@
                 <!-- Tarjeta 2 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Noxus -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-sola/Hamburguesa-Noxus.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Noxus">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Noxus</h5>
                         </div>
@@ -92,8 +85,7 @@
                 <!-- Tarjeta 3 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Zaun -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-Sola/Hamburguesa-Zaun.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Zaun">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Zaun</h5>
                         </div>
@@ -103,8 +95,7 @@
                 <!-- Tarjeta 4 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Piltover -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-Sola/Hamburguesa-Piltover.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Piltover">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Piltover</h5>
                         </div>
@@ -114,8 +105,7 @@
                 <!-- Tarjeta 5 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Bind -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-Sola/Hamburguesa-Bind.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Bind">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Bind</h5>
                         </div>
@@ -125,8 +115,7 @@
                 <!-- Tarjeta 6 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Templo Jonia -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-Sola/Hamburguesa-Jonia.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Templo Jonia">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Templo Jonia</h5>
                         </div>
@@ -136,8 +125,7 @@
                 <!-- Tarjeta 7 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Pengu -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-Sola/Hamburguesa-Pingu.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Pengu">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Pengu</h5>
                         </div>
@@ -147,8 +135,7 @@
                 <!-- Tarjeta 8 -->
                 <div class="col">
                     <div class="card bg-dark text-white border-0 shadow-sm custom-card overflow-hidden">
-                        <!-- Imagen: Foto de Hamburguesa Alistar -->
-                        <div class="card-bg-placeholder bg-secondary h-100 position-absolute w-100"></div>
+                        <img src="img/Carta/Hamburguesa-Sola/Hamburguesa-Alistar.png" class="card-img-bg w-100 h-100 object-fit-cover" alt="Hamburguesa Alistar">
                         <div class="card-img-overlay d-flex align-items-center justify-content-center text-center p-2">
                             <h5 class="card-title fw-bold text-shadow m-0">Hamburguesa Alistar</h5>
                         </div>
@@ -166,8 +153,7 @@
                 
                 <!-- Logo Footer -->
                 <div class="col-12 col-md-2 d-flex justify-content-center justify-content-md-start">
-                    <!-- Imagen: Logo blanco del footer -->
-                    <div class="bg-secondary rounded" style="width: 70px; height: 35px;"></div>
+                    <img src="img/Logo/Logo-Blanco.png" alt="Logo Footer" class="img-fluid" style="height: 40px;">
                 </div>
                 
                 <!-- Enlaces del Footer -->
@@ -186,4 +172,25 @@
                 </div>
 
                 <!-- Iconos Sociales -->
-                <div class="col-12 col-md-2 d-flex justify-content-center justify-content
+                <div class="col-12 col-md-2 d-flex justify-content-center justify-content-md-end gap-3 fs-5 fs-md-6">
+                    <a href="#" class="text-secondary"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-discord"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-globe"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-secondary"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+
+            <hr class="border-secondary my-4">
+
+            <div class="small text-center text-md-start">
+                <p class="m-0">Preferencias de cookies | © 2026 Riot Eats, Inc. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript de Bootstrap 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

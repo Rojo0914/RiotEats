@@ -1,69 +1,44 @@
 <?php
+// Carga las dependencias del modelo usando rutas relativas seguras
+include_once(__DIR__ . "/../models/CategoriaDAO.php");
+include_once(__DIR__ . "/../models/Categoria.php");
 
-include_once("models/CamisetaDAO.php");
-include_once("models/Camiseta.php");
-
-class productoController
+class CategoriaController
 {
-    private const TALLAS_VALIDAS = ['XXL', 'XL', 'L', 'M', 'S'];
-
-    public function index()
+    // Método por defecto: muestra el listado o redirige al formulario de crear
+    public function index(): void
     {
-        $productos = CamisetaDAO::getAll();
-        $view = "views/productos/listado.php";
-        include_once 'views/main.php';
+        $this->crear();
     }
 
-    public function create()
+    // Muestra la vista con el formulario HTML para crear una categoría
+    public function crear(): void
     {
-        $view = "views/productos/create.php";
-        include_once 'views/main.php';
+        include_once(__DIR__ . "/../views/categoria/crear.php");
     }
 
-    public function store()
+    // Recibe los datos del formulario POST y los guarda en la BD
+    public function guardar(): void
     {
-        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
-        $talla = isset($_POST['talla']) ? $_POST['talla'] : '';
-        $precio = isset($_POST['precio']) ? $_POST['precio'] : '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nombre = $_POST['nombre'] ?? '';
+            $slug = $_POST['slug'] ?? '';
+            $descripcion = !empty($_POST['descripcion']) ? $_POST['descripcion'] : null;
+            $activa = isset($_POST['activa']);
 
-        if ($nombre === '' || !in_array($talla, self::TALLAS_VALIDAS, true) || !is_numeric($precio) || $precio < 0) {
-            header('Location:?controller=producto&action=create');
-            exit;
+            // Instanciamos el objeto Categoria con sus tipos correspondientes
+            $categoria = new Categoria($nombre, $slug, $descripcion, $activa);
+
+            // Guardamos en MySQL usando CategoriaDAO
+            $exito = CategoriaDAO::store($categoria);
+
+            if ($exito) {
+                echo "<h2 style='color: green;'>¡Categoría guardada con éxito en MySQL!</h2>";
+                echo "<a href='" . url . "index.php?controller=Categoria&action=crear'>Volver al formulario</a>";
+            } else {
+                echo "<h2 style='color: red;'>Error al guardar la categoría.</h2>";
+            }
         }
-
-        $producto = new Camiseta($nombre, $talla, (float) $precio);
-        CamisetaDAO::store($producto);
-
-        header('Location:?controller=producto');
-        exit;
-    }
-
-    public function destroy()
-    {
-        if (!isset($_GET['id']) || !ctype_digit((string) $_GET['id'])) {
-            header('Location:?controller=producto');
-            exit;
-        }
-
-        CamisetaDAO::destroy((int) $_GET['id']);
-        header('Location:?controller=producto');
-        exit;
-    }
-
-    public function show()
-    {
-        if (!isset($_GET['id']) || !ctype_digit((string) $_GET['id'])) {
-            header('Location:?controller=producto');
-            exit;
-        }
-
-        $producto = CamisetaDAO::getById((int) $_GET['id']);
-        if ($producto === null) {
-            header('Location:?controller=producto');
-            exit;
-        }
-
-        $view = "views/productos/show.php";
-        include_once 'views/main.php';
     }
 }
+?>

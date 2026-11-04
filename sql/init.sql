@@ -538,6 +538,73 @@ INSERT INTO pedido_detalle_ingrediente (pedido_detalle_id, ingrediente_id, nombr
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
+-- ASIGNACIÓN DE IMÁGENES A TODOS LOS PRODUCTOS DE LA BBDD
+-- ============================================================
+
+-- 1. HAMBURGUESAS: LEAGUE OF LEGENDS
+UPDATE productos SET imagen = 'img/productos/noxus.webp' WHERE slug = 'noxus';
+UPDATE productos SET imagen = 'img/productos/zaun.webp' WHERE slug = 'zaun';
+UPDATE productos SET imagen = 'img/productos/piltover.webp' WHERE slug = 'piltover';
+UPDATE productos SET imagen = 'img/productos/alistar.webp' WHERE slug = 'hamburguesa-alistar';
+
+-- 2. HAMBURGUESAS: VALORANT
+UPDATE productos SET imagen = 'img/productos/bind.webp' WHERE slug = 'bind';
+UPDATE productos SET imagen = 'img/productos/haven.webp' WHERE slug = 'haven';
+UPDATE productos SET imagen = 'img/productos/ascent.webp' WHERE slug = 'ascent';
+UPDATE productos SET imagen = 'img/productos/split.webp' WHERE slug = 'split';
+
+-- 3. HAMBURGUESAS: 2XKO
+UPDATE productos SET imagen = 'img/productos/tag-team.webp' WHERE slug = 'tag-team';
+UPDATE productos SET imagen = 'img/productos/ko-punch.webp' WHERE slug = 'ko-punch';
+UPDATE productos SET imagen = 'img/productos/assist.webp' WHERE slug = 'assist';
+UPDATE productos SET imagen = 'img/productos/counter.webp' WHERE slug = 'counter';
+
+-- 4. HAMBURGUESAS: TFT
+UPDATE productos SET imagen = 'img/productos/pengu.webp' WHERE slug = 'pengu';
+UPDATE productos SET imagen = 'img/productos/chibi.webp' WHERE slug = 'chibi';
+UPDATE productos SET imagen = 'img/productos/carousel.webp' WHERE slug = 'carousel';
+UPDATE productos SET imagen = 'img/productos/hyperroll.webp' WHERE slug = 'hyperroll';
+
+-- 5. COMPLEMENTOS
+UPDATE productos SET imagen = 'img/productos/tequenos.webp' WHERE slug = 'tequenos';
+UPDATE productos SET imagen = 'img/productos/nachos.webp' WHERE slug = 'nachos';
+UPDATE productos SET imagen = 'img/productos/patatas.webp' WHERE slug = 'patatas-fritas';
+UPDATE productos SET imagen = 'img/productos/aros-cebolla.webp' WHERE slug = 'aros-cebolla';
+
+-- 6. POSTRES
+UPDATE productos SET imagen = 'img/productos/crepes.webp' WHERE slug = 'crepes';
+UPDATE productos SET imagen = 'img/productos/helado-vainilla.webp' WHERE slug = 'helado-vainilla';
+UPDATE productos SET imagen = 'img/productos/coulant.webp' WHERE slug = 'coulant';
+UPDATE productos SET imagen = 'img/productos/cheesecake.webp' WHERE slug = 'cheesecake';
+
+-- 7. BEBIDAS NO ALCOHÓLICAS
+UPDATE productos SET imagen = 'img/productos/agua.webp' WHERE slug = 'agua';
+UPDATE productos SET imagen = 'img/productos/cocacola.webp' WHERE slug = 'coca-cola';
+UPDATE productos SET imagen = 'img/productos/nestea.webp' WHERE slug = 'nestea';
+UPDATE productos SET imagen = 'img/productos/fanta-naranja.webp' WHERE slug = 'fanta-naranja';
+UPDATE productos SET imagen = 'img/productos/fanta-limon.webp' WHERE slug = 'fanta-limon';
+UPDATE productos SET imagen = 'img/productos/sprite.webp' WHERE slug = 'sprite';
+UPDATE productos SET imagen = 'img/productos/aquarius.webp' WHERE slug = 'aquarius';
+UPDATE productos SET imagen = 'img/productos/monster.webp' WHERE slug = 'monster';
+
+-- 8. BEBIDAS CON ALCOHOL
+UPDATE productos SET imagen = 'img/productos/red-buff.webp' WHERE slug = 'red-buff';
+UPDATE productos SET imagen = 'img/productos/blue-buff.webp' WHERE slug = 'blue-buff';
+UPDATE productos SET imagen = 'img/productos/void.webp' WHERE slug = 'void';
+UPDATE productos SET imagen = 'img/productos/spike-drink.webp' WHERE slug = 'spike-drink';
+UPDATE productos SET imagen = 'img/productos/yasuo.webp' WHERE slug = 'yasuo';
+
+-- 9. PACKS / COMBOS
+UPDATE productos SET imagen = 'img/productos/pack-noxus.webp' WHERE slug = 'pack-noxus';
+UPDATE productos SET imagen = 'img/productos/pack-clutch.webp' WHERE slug = 'pack-clutch';
+UPDATE productos SET imagen = 'img/productos/pack-flex.webp' WHERE slug = 'pack-flex';
+UPDATE productos SET imagen = 'img/productos/pack-2xko.webp' WHERE slug = 'pack-2xko';
+UPDATE productos SET imagen = 'img/productos/pack-cards.webp' WHERE slug = 'pack-cards';
+
+-- Comprobación: Muestra el nombre y la imagen de todos los productos
+SELECT id, nombre, slug, imagen FROM productos ORDER BY id ASC;
+
+-- ============================================================
 -- 23. CONSULTAS DE COMPROBACIÓN (SELECT * DE CADA TABLA)
 -- ============================================================
 

@@ -1,18 +1,6 @@
-
 -- ============================================================
--- RIOT EATS
--- BASE DE DATOS COMPLETA + DATOS DE PRUEBA
+-- RIOT EATS - BASE DE DATOS ACTUALIZADA Y COMPLETA
 -- MYSQL 8.4
--- ============================================================
--- USUARIOS:
--- admin  / Admin123!
--- user_1 / User123!
---
--- IMPORTANTE:
--- 1. ELIMINA TODAS LAS TABLAS DE riot_eats.
--- 2. RECREA TODA LA ESTRUCTURA.
--- 3. INSERTA TODOS LOS DATOS.
--- 4. NO DEBE EJECUTARSE SOBRE UNA BBDD QUE QUIERAS CONSERVAR.
 -- ============================================================
 
 CREATE DATABASE IF NOT EXISTS riot_eats
@@ -25,10 +13,26 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ============================================================
--- 0. ELIMINAR TODAS LAS TABLAS EXISTENTES
+-- 0. ELIMINAR TABLAS EXISTENTES
 -- ============================================================
 
 SET SESSION group_concat_max_len = 1000000;
+
+-- ============================================================
+-- 23. CONSULTAS DE COMPROBACIÓN (SELECT * DE CADA TABLA)
+-- ============================================================
+
+SELECT * FROM usuarios;
+SELECT * FROM categorias;
+SELECT * FROM productos ORDER BY id ASC;
+SELECT * FROM ingredientes;
+SELECT * FROM producto_ingrediente;
+SELECT * FROM producto_combo;
+SELECT * FROM ofertas;
+SELECT * FROM oferta_producto;
+SELECT * FROM pedidos;
+SELECT * FROM pedido_detalle;
+SELECT * FROM pedido_detalle_ingrediente;
 
 SELECT GROUP_CONCAT(
     CONCAT('`', REPLACE(table_name,'`','``'), '`')
@@ -118,7 +122,7 @@ CREATE TABLE ingredientes (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- 5. RELACION PRODUCTO - INGREDIENTE
+-- 5. RELACION PRODUCTO - INGREDIENTE (RECETAS Y COMPONENTES)
 -- ============================================================
 
 CREATE TABLE producto_ingrediente (
@@ -138,7 +142,7 @@ CREATE TABLE producto_ingrediente (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- 6. COMPONENTES DE LOS COMBOS
+-- 6. COMPONENTES DE LOS COMBOS / PACKS
 -- ============================================================
 
 CREATE TABLE producto_combo (
@@ -166,16 +170,11 @@ CREATE TABLE ofertas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
     descripcion TEXT,
-
-    tipo VARCHAR(20) NOT NULL
-    COMMENT 'descuento, 2x1, combo, codigo',
-
+    tipo VARCHAR(20) NOT NULL,
     valor DECIMAL(10,2),
     codigo VARCHAR(50) UNIQUE,
-
     fecha_inicio DATETIME NOT NULL,
     fecha_fin DATETIME,
-
     activa BOOLEAN NOT NULL DEFAULT TRUE,
 
     CHECK (tipo IN ('descuento','2x1','combo','codigo')),
@@ -206,50 +205,23 @@ CREATE TABLE oferta_producto (
 
 CREATE TABLE pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
-
     usuario_id INT NOT NULL,
-
     estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
-
     fecha_pedido DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
     subtotal DECIMAL(10,2) NOT NULL,
     descuento DECIMAL(10,2) NOT NULL DEFAULT 0,
     total DECIMAL(10,2) NOT NULL,
-
     metodo_pago VARCHAR(50) NOT NULL DEFAULT 'simulado',
     estado_pago VARCHAR(20) NOT NULL DEFAULT 'pendiente',
-
     oferta_id INT NULL,
     codigo_oferta VARCHAR(50) NULL,
-
     referencia_prueba VARCHAR(50) UNIQUE,
 
-    FOREIGN KEY (usuario_id)
-    REFERENCES usuarios(id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (oferta_id) REFERENCES ofertas(id),
 
-    FOREIGN KEY (oferta_id)
-    REFERENCES ofertas(id),
-
-    CHECK (
-        estado IN (
-            'pendiente',
-            'confirmado',
-            'preparando',
-            'enviado',
-            'entregado',
-            'cancelado'
-        )
-    ),
-
-    CHECK (
-        estado_pago IN (
-            'pendiente',
-            'pagado',
-            'fallido'
-        )
-    ),
-
+    CHECK (estado IN ('pendiente','confirmado','preparando','enviado','entregado','cancelado')),
+    CHECK (estado_pago IN ('pendiente','pagado','fallido')),
     CHECK (subtotal >= 0),
     CHECK (descuento >= 0),
     CHECK (descuento <= subtotal),
@@ -263,25 +235,16 @@ CREATE TABLE pedidos (
 
 CREATE TABLE pedido_detalle (
     id INT AUTO_INCREMENT PRIMARY KEY,
-
     pedido_id INT NOT NULL,
     producto_id INT NULL,
-
     nombre_producto VARCHAR(150) NOT NULL,
-
     precio_unitario DECIMAL(10,2) NOT NULL,
     cantidad INT NOT NULL,
-
     subtotal DECIMAL(10,2) NOT NULL,
-
     referencia_prueba VARCHAR(60) UNIQUE,
 
-    FOREIGN KEY (pedido_id)
-    REFERENCES pedidos(id),
-
-    FOREIGN KEY (producto_id)
-    REFERENCES productos(id)
-    ON DELETE SET NULL,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE SET NULL,
 
     CHECK (cantidad > 0),
     CHECK (precio_unitario >= 0),
@@ -294,999 +257,298 @@ CREATE TABLE pedido_detalle (
 
 CREATE TABLE pedido_detalle_ingrediente (
     id INT AUTO_INCREMENT PRIMARY KEY,
-
     pedido_detalle_id INT NOT NULL,
-
     ingrediente_id INT NULL,
-
     nombre_ingrediente VARCHAR(100) NOT NULL,
-
     precio_extra DECIMAL(10,2) NOT NULL DEFAULT 0,
-
     accion VARCHAR(20) NOT NULL,
 
-    FOREIGN KEY (pedido_detalle_id)
-    REFERENCES pedido_detalle(id),
-
-    FOREIGN KEY (ingrediente_id)
-    REFERENCES ingredientes(id)
-    ON DELETE SET NULL,
+    FOREIGN KEY (pedido_detalle_id) REFERENCES pedido_detalle(id),
+    FOREIGN KEY (ingrediente_id) REFERENCES ingredientes(id) ON DELETE SET NULL,
 
     CHECK (precio_extra >= 0),
-
-    CHECK (
-        accion IN (
-            'incluido',
-            'quitado',
-            'añadido'
-        )
-    )
+    CHECK (accion IN ('incluido','quitado','añadido'))
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- 12. CATEGORIAS
+-- 12. INSERTAR CATEGORIAS
 -- ============================================================
 
-INSERT INTO categorias
-(nombre,slug,descripcion,activa)
-VALUES
-('Hamburguesas','hamburguesas',
-'Hamburguesas tematicas de Riot Eats',TRUE),
-
-('Combos','combos',
-'Combos individuales y grupales',TRUE),
-
-('Acompanamientos','acompanamientos',
-'Patatas y acompanamientos',TRUE),
-
-('Bebidas','bebidas',
-'Bebidas disponibles',TRUE),
-
-('Postres','postres',
-'Postres disponibles',TRUE);
+INSERT INTO categorias (nombre, slug, descripcion, activa) VALUES
+('Packs', 'packs', 'Combos y paquetes especiales', TRUE),
+('Complementos', 'complementos', 'Entrantes y acompañamientos', TRUE),
+('Hamburguesas', 'hamburguesas', 'Hamburguesas temáticas de Riot Games', TRUE),
+('Postres', 'postres', 'Postres dulces', TRUE),
+('Bebidas', 'bebidas', 'Refrescos y bebidas no alcohólicas', TRUE),
+('Bebidas con Alcohol', 'bebidas-con-alcohol', 'Cócteles y bebidas alcohólicas temáticas', TRUE);
 
 -- ============================================================
--- 13. PRODUCTOS
+-- 13. INSERTAR PRODUCTOS
 -- ============================================================
 
-INSERT INTO productos
-(categoria_id,sku,slug,nombre,descripcion,precio,imagen,activo)
-
-SELECT
-c.id,d.sku,d.slug,d.nombre,d.descripcion,d.precio,d.imagen,d.activo
-
+INSERT INTO productos (categoria_id, sku, slug, nombre, descripcion, precio, imagen, activo)
+SELECT c.id, d.sku, d.slug, d.nombre, d.descripcion, d.precio, d.imagen, d.activo
 FROM categorias c
-
 JOIN (
-    SELECT 'hamburguesas' categoria,
-    'RE-HAM-NOXUS' sku,'noxus' slug,'Noxus' nombre,
-    'Vacuno, cheddar y bacon' descripcion,
-    11.90 precio,'img/productos/noxus.webp' imagen,TRUE activo
+    -- HAMBURGUESAS: LEAGUE OF LEGENDS (4)
+    SELECT 'hamburguesas' categoria, 'RE-HAM-NOXUS' sku, 'noxus' slug, 'Noxus' nombre, 'Carne de vacuno, cheddar y bacon' descripcion, 11.90 precio, 'img/productos/noxus.webp' imagen, TRUE activo
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ZAUN', 'zaun', 'Zaun', 'Carne de vacuno, cheddar, bacon y jalapeños', 12.90, 'img/productos/zaun.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-PILTOVER', 'piltover', 'Piltover', 'Carne de vacuno, cheddar, lechuga y tomate', 13.50, 'img/productos/piltover.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ALISTAR', 'hamburguesa-alistar', 'Hamburguesa Alistar', 'Doble carne de búfalo con queso gouda y cebolla crujiente', 16.90, 'img/productos/alistar.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-ZAUN','zaun','Zaun',
-    'Vacuno, cheddar, bacon y jalapenos',
-    12.90,'img/productos/zaun.webp',TRUE
+    -- HAMBURGUESAS: VALORANT (4)
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-BIND', 'bind', 'Bind', 'Carne de vacuno, cheddar, cebolla crujiente, pepinillos y bacon caramelizado', 13.50, 'img/productos/bind.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-HAVEN', 'haven', 'Haven', 'Pollo crujiente, lechuga, mayonesa picante y cheddar', 12.90, 'img/productos/haven.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ASCENT', 'ascent', 'Ascent', 'Carne de vacuno, queso provolone, mermelada de bacon y salsa especial', 13.90, 'img/productos/ascent.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-SPLIT', 'split', 'Split', 'Doble carne de vacuno, doble cheddar, cebolla caramelizada y salsa BBQ', 14.50, 'img/productos/split.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-PILTOVER','piltover','Piltover',
-    'Vacuno, cheddar, lechuga y tomate',
-    13.50,'img/productos/piltover.webp',TRUE
+    -- HAMBURGUESAS: 2XKO (4)
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-TAG-TEAM', 'tag-team', 'Tag Team', 'Doble carne picante, queso pepper jack y bacon ahumado', 14.90, 'img/productos/tag-team.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-KO-PUNCH', 'ko-punch', 'KO Punch', 'Pollo empanado estilo frito, pepinillos y salsa buffalo', 12.50, 'img/productos/ko-punch.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ASSIST', 'assist', 'Assist', 'Hamburguesa de ternera con huevo frito, cheddar y salsa secreta', 13.20, 'img/productos/assist.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-COUNTER', 'counter', 'Counter', 'Carne de vacuno, guacamole, jalapeños y queso fundido', 13.80, 'img/productos/counter.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-DEMACIA','demacia','Demacia',
-    'Hamburguesa clasica de vacuno y cheddar',
-    12.50,'img/productos/demacia.webp',TRUE
+    -- HAMBURGUESAS: TFT (4)
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-PENGU', 'pengu', 'Pengu', 'Hamburguesa estilo smash con doble cheddar y pepinillos', 11.50, 'img/productos/pengu.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-CHIBI', 'chibi', 'Chibi', 'Hamburguesa individual con queso cheddar y bacon', 10.50, 'img/productos/chibi.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-CAROUSEL', 'carousel', 'Carousel', 'Carne de vacuno, aros de cebolla, bacon y queso gouda', 13.90, 'img/productos/carousel.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-HYPERROLL', 'hyperroll', 'Hyperroll', 'Triple carne smash, triple cheddar y bacon ahumado', 15.90, 'img/productos/hyperroll.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-JONIA','jonia','Jonia',
-    'Vacuno, cebolla y salsa especial',
-    12.90,'img/productos/jonia.webp',TRUE
+    -- COMPLEMENTOS (4)
+    UNION ALL SELECT 'complementos', 'RE-ACC-TEQUENOS', 'tequenos', 'Tequeños', 'Tequeños rellenos de queso fundido', 6.50, 'img/productos/tequenos.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-NACHOS', 'nachos', 'Nachos', 'Nachos con queso, guacamole y jalapeños', 7.50, 'img/productos/nachos.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-PATATAS', 'patatas-fritas', 'Patatas Fritas', 'Ración de patatas fritas crujientes', 3.50, 'img/productos/patatas.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-AROS-CEBOLLA', 'aros-cebolla', 'Aros de Cebolla', 'Aros de cebolla rebozados', 4.90, 'img/productos/aros-cebolla.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-SHURIMA','shurima','Shurima',
-    'Vacuno, cheddar, bacon y jalapenos',
-    13.90,'img/productos/shurima.webp',TRUE
+    -- POSTRES (4)
+    UNION ALL SELECT 'postres', 'RE-POS-CREPES', 'crepes', 'Crepes', 'Crepes rellenos de chocolate', 4.50, 'img/productos/crepes.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-HELADO-VAINILLA', 'helado-vainilla', 'Helado de Vainilla', 'Tina de helado sabor vainilla', 3.90, 'img/productos/helado-vainilla.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-COULANT', 'coulant', 'Coulant', 'Coulant de chocolate con corazón fundido', 4.90, 'img/productos/coulant.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-CHEESECAKE', 'cheesecake', 'Cheesecake', 'Tarta de queso estilo New York', 4.90, 'img/productos/cheesecake.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-SPIKE','spike','Spike',
-    'Hamburguesa especial de Riot Eats',
-    11.50,'img/productos/spike.webp',FALSE
+    -- BEBIDAS NO ALCOHÓLICAS (8)
+    UNION ALL SELECT 'bebidas', 'RE-BEB-AGUA', 'agua', 'Agua', 'Agua mineral 50cl', 1.50, 'img/productos/agua.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-COCACOLA', 'coca-cola', 'Coca-Cola', 'Refresco Coca-Cola 33cl', 2.50, 'img/productos/cocacola.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-NESTEA', 'nestea', 'Nestea', 'Té frío al limón 33cl', 2.50, 'img/productos/nestea.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-FANTA-NARANJA', 'fanta-naranja', 'Fanta Naranja', 'Refresco de naranja 33cl', 2.50, 'img/productos/fanta-naranja.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-FANTA-LIMON', 'fanta-limon', 'Fanta Limón', 'Refresco de limón 33cl', 2.50, 'img/productos/fanta-limon.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-SPRITE', 'sprite', 'Sprite', 'Refresco de lima-limón 33cl', 2.50, 'img/productos/sprite.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-AQUARIUS', 'aquarius', 'Aquarius', 'Bebida isotónica 33cl', 2.50, 'img/productos/aquarius.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-MONSTER', 'monster', 'Monster Energy', 'Bebida energética 50cl', 3.50, 'img/productos/monster.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-ASCENT','ascent','Ascent',
-    'Vacuno, cheddar y bacon',
-    12.50,'img/productos/ascent.webp',TRUE
+    -- BEBIDAS CON ALCOHOL (5)
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-RED-BUFF', 'red-buff', 'Red Buff', 'Cóctel a base de vodka y bebidas rojas', 7.50, 'img/productos/red-buff.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-BLUE-BUFF', 'blue-buff', 'Blue Buff', 'Cóctel azul con ginebra y curacao', 7.50, 'img/productos/blue-buff.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-VOID', 'void', 'Void', 'Cóctel místico con ron y frutos negros', 8.00, 'img/productos/void.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-SPIKE', 'spike-drink', 'Spike', 'Chupete/Combinado potente de la casa', 6.50, 'img/productos/spike-drink.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-YASUO', 'yasuo', 'Yasuo', 'Combinado de sake con toque cítrico', 7.00, 'img/productos/yasuo.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-BIND','bind','Bind',
-    'Vacuno, cheddar, cebolla crujiente, pepinillos y bacon caramelizado',
-    13.50,'img/productos/bind.webp',TRUE
+    -- PACKS (5)
+    UNION ALL SELECT 'packs', 'RE-PAK-NOXUS', 'pack-noxus', 'Pack Noxus', 'Hamburguesa LoL + Patatas Fritas + Bebida', 15.90, 'img/productos/pack-noxus.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-CLUTCH', 'pack-clutch', 'Pack Clutch', 'Hamburguesa Valorant + Patatas Fritas + Bebida', 16.50, 'img/productos/pack-clutch.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-FLEX', 'pack-flex', 'Pack Flex', '5 Hamburguesas LoL + 5 Patatas Fritas + 5 Bebidas', 69.90, 'img/productos/pack-flex.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-2XKO', 'pack-2xko', 'Pack 2XKO', 'Hamburguesa 2XKO + Patatas + Complemento + Bebida + Helado', 22.90, 'img/productos/pack-2xko.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-CARDS', 'pack-cards', 'Pack Cards', 'Hamburguesa TFT + Patatas Fritas + Bebida', 14.90, 'img/productos/pack-cards.webp', TRUE
 
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-SPLIT','split','Split',
-    'Vacuno, lechuga, tomate y cebolla',
-    12.90,'img/productos/split.webp',TRUE
-
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-TEMPLO-JONIA','templo-jonia','Templo Jonia',
-    'Hamburguesa especial inspirada en Jonia',
-    14.50,'img/productos/templo-jonia.webp',TRUE
-
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-ALISTAR','alistar','Alistar',
-    'Hamburguesa de carne de bufalo con abundante carne',
-    16.90,'img/productos/alistar.webp',TRUE
-
-    UNION ALL SELECT 'hamburguesas',
-    'RE-HAM-TFT','tft','TFT',
-    'Hamburguesa especial inspirada en Teamfight Tactics',
-    14.90,'img/productos/tft.webp',TRUE
-
-    UNION ALL SELECT 'combos',
-    'RE-COM-SOLO-QUEUE','solo-queue','Solo Queue',
-    'Hamburguesa, patatas y bebida',
-    17.90,'img/productos/solo-queue.webp',TRUE
-
-    UNION ALL SELECT 'combos',
-    'RE-COM-FLEX-QUEUE','flex-queue','Flex Queue',
-    'Cinco hamburguesas, cinco patatas y cinco bebidas',
-    75.50,'img/productos/flex-queue.webp',TRUE
-
-    UNION ALL SELECT 'combos',
-    'RE-COM-2XKO','2xko','2XKO',
-    'Hamburguesa, patatas, nuggets, bebida y postre',
-    24.90,'img/productos/2xko.webp',TRUE
-
-    UNION ALL SELECT 'acompanamientos',
-    'RE-ACC-PATATAS','patatas-fritas','Patatas fritas',
-    'Racion de patatas fritas',
-    3.50,'img/productos/patatas.webp',TRUE
-
-    UNION ALL SELECT 'acompanamientos',
-    'RE-ACC-NUGGETS','nuggets','Nuggets',
-    'Nuggets de pollo',
-    5.50,'img/productos/nuggets.webp',TRUE
-
-    UNION ALL SELECT 'bebidas',
-    'RE-BEB-COCACOLA','coca-cola','Coca-Cola',
-    'Refresco Coca-Cola',
-    2.50,'img/productos/cocacola.webp',TRUE
-
-    UNION ALL SELECT 'bebidas',
-    'RE-BEB-AGUA','agua','Agua',
-    'Agua embotellada',
-    1.50,'img/productos/agua.webp',TRUE
-
-    UNION ALL SELECT 'postres',
-    'RE-POS-HELADO','helado','Helado',
-    'Postre helado',
-    3.90,'img/productos/helado.webp',TRUE
-
-) d ON d.categoria=c.slug;
+) d ON d.categoria = c.slug;
 
 -- ============================================================
--- 14. INGREDIENTES
+-- 14. INGREDIENTES BASE
 -- ============================================================
 
-INSERT INTO ingredientes
-(sku,nombre,precio_extra,activo)
-VALUES
-
-('RE-ING-CARNE-VACUNO','Carne de vacuno',3.50,TRUE),
-('RE-ING-CARNE-BUFALO','Carne de bufalo',4.00,TRUE),
-('RE-ING-PAN','Pan de hamburguesa',0.00,TRUE),
-('RE-ING-CHEDDAR','Queso cheddar',1.20,TRUE),
-('RE-ING-BACON','Bacon',1.50,TRUE),
-('RE-ING-JALAPENOS','Jalapenos',0.80,TRUE),
-('RE-ING-CEBOLLA-CRUJIENTE','Cebolla crujiente',0.90,TRUE),
-('RE-ING-PEPINILLOS','Pepinillos',0.50,TRUE),
-('RE-ING-BACON-CARAMELIZADO','Bacon caramelizado',1.80,TRUE),
-('RE-ING-LECHUGA','Lechuga',0.30,TRUE),
-('RE-ING-TOMATE','Tomate',0.30,TRUE),
-('RE-ING-CEBOLLA','Cebolla',0.30,TRUE),
-('RE-ING-SALSA','Salsa de hamburguesa',0.50,TRUE),
-('RE-ING-PATATAS','Patatas fritas',0.00,TRUE),
-('RE-ING-NUGGETS','Nuggets de pollo',0.00,TRUE),
-('RE-ING-COCACOLA','Coca-Cola',0.00,TRUE),
-('RE-ING-AGUA','Agua',0.00,TRUE),
-('RE-ING-HELADO','Helado',0.00,TRUE),
-
--- Ingrediente inactivo para pruebas
-('RE-ING-TRUFA','Salsa de trufa',1.50,FALSE);
+INSERT INTO ingredientes (sku, nombre, precio_extra, activo) VALUES
+('RE-ING-CARNE-VACUNO', 'Carne de vacuno', 3.50, TRUE),
+('RE-ING-CARNE-BUFALO', 'Carne de búfalo', 4.00, TRUE),
+('RE-ING-POLLO', 'Pollo crujiente', 3.00, TRUE),
+('RE-ING-PAN', 'Pan de hamburguesa', 0.00, TRUE),
+('RE-ING-CHEDDAR', 'Queso cheddar', 1.20, TRUE),
+('RE-ING-GOUDA', 'Queso gouda', 1.20, TRUE),
+('RE-ING-PEPPERJACK', 'Queso pepper jack', 1.30, TRUE),
+('RE-ING-PROVOLONE', 'Queso provolone', 1.50, TRUE),
+('RE-ING-BACON', 'Bacon', 1.50, TRUE),
+('RE-ING-BACON-CARAMELIZADO', 'Bacon caramelizado', 1.80, TRUE),
+('RE-ING-JALAPENOS', 'Jalapeños', 0.80, TRUE),
+('RE-ING-CEBOLLA-CRUJIENTE', 'Cebolla crujiente', 0.90, TRUE),
+('RE-ING-CEBOLLA-CARAMELIZADA', 'Cebolla caramelizada', 1.00, TRUE),
+('RE-ING-PEPINILLOS', 'Pepinillos', 0.50, TRUE),
+('RE-ING-LECHUGA', 'Lechuga', 0.30, TRUE),
+('RE-ING-TOMATE', 'Tomate', 0.30, TRUE),
+('RE-ING-HUEVO', 'Huevo frito', 1.20, TRUE),
+('RE-ING-GUACAMOLE', 'Guacamole', 1.50, TRUE),
+('RE-ING-AROS-CEBOLLA', 'Aros de cebolla', 1.20, TRUE),
+('RE-ING-SALSA-HAMBURGUESA', 'Salsa de hamburguesa', 0.50, TRUE),
+('RE-ING-SALSA-BBQ', 'Salsa BBQ', 0.50, TRUE),
+('RE-ING-SALSA-BUFFALO', 'Salsa Buffalo', 0.60, TRUE);
 
 -- ============================================================
--- 15. RECETAS DE HAMBURGUESAS
+-- 15. RECETAS DE HAMBURGUESAS (PRODUCTO_INGREDIENTE)
 -- ============================================================
 
-INSERT INTO producto_ingrediente
-(producto_id,ingrediente_id,cantidad)
-
-SELECT p.id,i.id,1.00
-
+INSERT INTO producto_ingrediente (producto_id, ingrediente_id, cantidad)
+SELECT p.id, i.id, 1.00
 FROM (
-    SELECT 'noxus' slug,'Carne de vacuno' ingrediente
-    UNION ALL SELECT 'noxus','Pan de hamburguesa'
-    UNION ALL SELECT 'noxus','Queso cheddar'
-    UNION ALL SELECT 'noxus','Bacon'
-    UNION ALL SELECT 'noxus','Salsa de hamburguesa'
-
-    UNION ALL SELECT 'zaun','Carne de vacuno'
-    UNION ALL SELECT 'zaun','Pan de hamburguesa'
-    UNION ALL SELECT 'zaun','Queso cheddar'
-    UNION ALL SELECT 'zaun','Bacon'
-    UNION ALL SELECT 'zaun','Jalapenos'
-    UNION ALL SELECT 'zaun','Salsa de hamburguesa'
-
-    UNION ALL SELECT 'piltover','Carne de vacuno'
-    UNION ALL SELECT 'piltover','Pan de hamburguesa'
-    UNION ALL SELECT 'piltover','Queso cheddar'
-    UNION ALL SELECT 'piltover','Lechuga'
-    UNION ALL SELECT 'piltover','Tomate'
-    UNION ALL SELECT 'piltover','Salsa de hamburguesa'
-
-    UNION ALL SELECT 'demacia','Carne de vacuno'
-    UNION ALL SELECT 'demacia','Pan de hamburguesa'
-    UNION ALL SELECT 'demacia','Queso cheddar'
-    UNION ALL SELECT 'demacia','Lechuga'
-    UNION ALL SELECT 'demacia','Tomate'
-
-    UNION ALL SELECT 'jonia','Carne de vacuno'
-    UNION ALL SELECT 'jonia','Pan de hamburguesa'
-    UNION ALL SELECT 'jonia','Cebolla'
-    UNION ALL SELECT 'jonia','Salsa de hamburguesa'
-
-    UNION ALL SELECT 'shurima','Carne de vacuno'
-    UNION ALL SELECT 'shurima','Pan de hamburguesa'
-    UNION ALL SELECT 'shurima','Queso cheddar'
-    UNION ALL SELECT 'shurima','Bacon'
-    UNION ALL SELECT 'shurima','Jalapenos'
-
-    UNION ALL SELECT 'spike','Carne de vacuno'
-    UNION ALL SELECT 'spike','Pan de hamburguesa'
-    UNION ALL SELECT 'spike','Queso cheddar'
-    UNION ALL SELECT 'spike','Salsa de hamburguesa'
-
-    UNION ALL SELECT 'ascent','Carne de vacuno'
-    UNION ALL SELECT 'ascent','Pan de hamburguesa'
-    UNION ALL SELECT 'ascent','Queso cheddar'
-    UNION ALL SELECT 'ascent','Bacon'
-
-    UNION ALL SELECT 'bind','Carne de vacuno'
-    UNION ALL SELECT 'bind','Pan de hamburguesa'
-    UNION ALL SELECT 'bind','Queso cheddar'
-    UNION ALL SELECT 'bind','Cebolla crujiente'
-    UNION ALL SELECT 'bind','Pepinillos'
-    UNION ALL SELECT 'bind','Bacon caramelizado'
-
-    UNION ALL SELECT 'split','Carne de vacuno'
-    UNION ALL SELECT 'split','Pan de hamburguesa'
-    UNION ALL SELECT 'split','Lechuga'
-    UNION ALL SELECT 'split','Tomate'
-    UNION ALL SELECT 'split','Cebolla'
-
-    UNION ALL SELECT 'templo-jonia','Carne de vacuno'
-    UNION ALL SELECT 'templo-jonia','Pan de hamburguesa'
-    UNION ALL SELECT 'templo-jonia','Queso cheddar'
-    UNION ALL SELECT 'templo-jonia','Bacon caramelizado'
-    UNION ALL SELECT 'templo-jonia','Salsa de hamburguesa'
-
-    UNION ALL SELECT 'alistar','Carne de bufalo'
-    UNION ALL SELECT 'alistar','Pan de hamburguesa'
-    UNION ALL SELECT 'alistar','Queso cheddar'
-    UNION ALL SELECT 'alistar','Bacon'
-
-    UNION ALL SELECT 'tft','Carne de vacuno'
-    UNION ALL SELECT 'tft','Pan de hamburguesa'
-    UNION ALL SELECT 'tft','Queso cheddar'
-    UNION ALL SELECT 'tft','Bacon'
-    UNION ALL SELECT 'tft','Cebolla crujiente'
-
+    -- Noxus
+    SELECT 'noxus' slug, 'Carne de vacuno' ingrediente UNION ALL SELECT 'noxus', 'Pan de hamburguesa' UNION ALL SELECT 'noxus', 'Queso cheddar' UNION ALL SELECT 'noxus', 'Bacon' UNION ALL SELECT 'noxus', 'Salsa de hamburguesa'
+    -- Zaun
+    UNION ALL SELECT 'zaun', 'Carne de vacuno' UNION ALL SELECT 'zaun', 'Pan de hamburguesa' UNION ALL SELECT 'zaun', 'Queso cheddar' UNION ALL SELECT 'zaun', 'Bacon' UNION ALL SELECT 'zaun', 'Jalapeños'
+    -- Piltover
+    UNION ALL SELECT 'piltover', 'Carne de vacuno' UNION ALL SELECT 'piltover', 'Pan de hamburguesa' UNION ALL SELECT 'piltover', 'Queso cheddar' UNION ALL SELECT 'piltover', 'Lechuga' UNION ALL SELECT 'piltover', 'Tomate'
+    -- Hamburguesa Alistar
+    UNION ALL SELECT 'hamburguesa-alistar', 'Carne de búfalo' UNION ALL SELECT 'hamburguesa-alistar', 'Pan de hamburguesa' UNION ALL SELECT 'hamburguesa-alistar', 'Queso gouda' UNION ALL SELECT 'hamburguesa-alistar', 'Cebolla crujiente'
+    -- Bind
+    UNION ALL SELECT 'bind', 'Carne de vacuno' UNION ALL SELECT 'bind', 'Pan de hamburguesa' UNION ALL SELECT 'bind', 'Queso cheddar' UNION ALL SELECT 'bind', 'Cebolla crujiente' UNION ALL SELECT 'bind', 'Pepinillos' UNION ALL SELECT 'bind', 'Bacon caramelizado'
+    -- Haven
+    UNION ALL SELECT 'haven', 'Pollo crujiente' UNION ALL SELECT 'haven', 'Pan de hamburguesa' UNION ALL SELECT 'haven', 'Queso cheddar' UNION ALL SELECT 'haven', 'Lechuga' UNION ALL SELECT 'haven', 'Salsa Buffalo'
+    -- Ascent
+    UNION ALL SELECT 'ascent', 'Carne de vacuno' UNION ALL SELECT 'ascent', 'Pan de hamburguesa' UNION ALL SELECT 'ascent', 'Queso provolone' UNION ALL SELECT 'ascent', 'Bacon caramelizado'
+    -- Split
+    UNION ALL SELECT 'split', 'Carne de vacuno' UNION ALL SELECT 'split', 'Pan de hamburguesa' UNION ALL SELECT 'split', 'Queso cheddar' UNION ALL SELECT 'split', 'Cebolla caramelizada' UNION ALL SELECT 'split', 'Salsa BBQ'
+    -- Tag Team
+    UNION ALL SELECT 'tag-team', 'Carne de vacuno' UNION ALL SELECT 'tag-team', 'Pan de hamburguesa' UNION ALL SELECT 'tag-team', 'Queso pepper jack' UNION ALL SELECT 'tag-team', 'Bacon' UNION ALL SELECT 'tag-team', 'Jalapeños'
+    -- KO Punch
+    UNION ALL SELECT 'ko-punch', 'Pollo crujiente' UNION ALL SELECT 'ko-punch', 'Pan de hamburguesa' UNION ALL SELECT 'ko-punch', 'Pepinillos' UNION ALL SELECT 'ko-punch', 'Salsa Buffalo'
+    -- Assist
+    UNION ALL SELECT 'assist', 'Carne de vacuno' UNION ALL SELECT 'assist', 'Pan de hamburguesa' UNION ALL SELECT 'assist', 'Queso cheddar' UNION ALL SELECT 'assist', 'Huevo frito' UNION ALL SELECT 'assist', 'Salsa de hamburguesa'
+    -- Counter
+    UNION ALL SELECT 'counter', 'Carne de vacuno' UNION ALL SELECT 'counter', 'Pan de hamburguesa' UNION ALL SELECT 'counter', 'Guacamole' UNION ALL SELECT 'counter', 'Jalapeños' UNION ALL SELECT 'counter', 'Queso pepper jack'
+    -- Pengu
+    UNION ALL SELECT 'pengu', 'Carne de vacuno' UNION ALL SELECT 'pengu', 'Pan de hamburguesa' UNION ALL SELECT 'pengu', 'Queso cheddar' UNION ALL SELECT 'pengu', 'Pepinillos'
+    -- Chibi
+    UNION ALL SELECT 'chibi', 'Carne de vacuno' UNION ALL SELECT 'chibi', 'Pan de hamburguesa' UNION ALL SELECT 'chibi', 'Queso cheddar' UNION ALL SELECT 'chibi', 'Bacon'
+    -- Carousel
+    UNION ALL SELECT 'carousel', 'Carne de vacuno' UNION ALL SELECT 'carousel', 'Pan de hamburguesa' UNION ALL SELECT 'carousel', 'Queso gouda' UNION ALL SELECT 'carousel', 'Aros de cebolla' UNION ALL SELECT 'carousel', 'Bacon'
+    -- Hyperroll
+    UNION ALL SELECT 'hyperroll', 'Carne de vacuno' UNION ALL SELECT 'hyperroll', 'Pan de hamburguesa' UNION ALL SELECT 'hyperroll', 'Queso cheddar' UNION ALL SELECT 'hyperroll', 'Bacon' UNION ALL SELECT 'hyperroll', 'Salsa BBQ'
 ) receta
-
-JOIN productos p ON p.slug=receta.slug
-JOIN ingredientes i ON i.nombre=receta.ingrediente;
+JOIN productos p ON p.slug = receta.slug
+JOIN ingredientes i ON i.nombre = receta.ingrediente;
 
 -- ============================================================
--- 16. RECETAS DE ACOMPANAMIENTOS, BEBIDAS Y POSTRES
+-- 16. COMPONENTES DE LOS PACKS (PRODUCTO_COMBO)
 -- ============================================================
 
-INSERT INTO producto_ingrediente
-(producto_id,ingrediente_id,cantidad)
-
-SELECT p.id,i.id,1.00
+INSERT INTO producto_combo (combo_id, producto_id, cantidad)
+SELECT combo.id, componente.id, d.cantidad
 FROM (
-    SELECT 'patatas-fritas' slug,'Patatas fritas' ingrediente
-    UNION ALL SELECT 'nuggets','Nuggets de pollo'
-    UNION ALL SELECT 'coca-cola','Coca-Cola'
-    UNION ALL SELECT 'agua','Agua'
-    UNION ALL SELECT 'helado','Helado'
-) receta
-JOIN productos p ON p.slug=receta.slug
-JOIN ingredientes i ON i.nombre=receta.ingrediente;
+    -- Pack Noxus (Hamburguesa LoL + Patatas + Bebida)
+    SELECT 'pack-noxus' combo, 'noxus' componente, 1 cantidad
+    UNION ALL SELECT 'pack-noxus', 'patatas-fritas', 1
+    UNION ALL SELECT 'pack-noxus', 'coca-cola', 1
 
--- ============================================================
--- 17. COMPONENTES DE LOS COMBOS
--- ============================================================
+    -- Pack Clutch (Hamburguesa Valorant + Patatas + Bebida)
+    UNION ALL SELECT 'pack-clutch', 'bind', 1
+    UNION ALL SELECT 'pack-clutch', 'patatas-fritas', 1
+    UNION ALL SELECT 'pack-clutch', 'coca-cola', 1
 
--- SOLO QUEUE: 1 hamburguesa + patatas + bebida
+    -- Pack Flex (5 Hamburguesas LoL + 5 Patatas + 5 Bebidas)
+    UNION ALL SELECT 'pack-flex', 'noxus', 5
+    UNION ALL SELECT 'pack-flex', 'patatas-fritas', 5
+    UNION ALL SELECT 'pack-flex', 'coca-cola', 5
 
-INSERT INTO producto_combo
-(combo_id,producto_id,cantidad)
+    -- Pack 2XKO (Hamburguesa 2XKO + Patatas + Complemento + Bebida + Helado)
+    UNION ALL SELECT 'pack-2xko', 'tag-team', 1
+    UNION ALL SELECT 'pack-2xko', 'patatas-fritas', 1
+    UNION ALL SELECT 'pack-2xko', 'tequenos', 1
+    UNION ALL SELECT 'pack-2xko', 'coca-cola', 1
+    UNION ALL SELECT 'pack-2xko', 'helado-vainilla', 1
 
-SELECT combo.id,componente.id,d.cantidad
-
-FROM (
-    SELECT 'solo-queue' combo,'noxus' componente,1 cantidad
-    UNION ALL SELECT 'solo-queue','patatas-fritas',1
-    UNION ALL SELECT 'solo-queue','coca-cola',1
-
-    -- FLEX QUEUE: cinco unidades de cada componente
-    UNION ALL SELECT 'flex-queue','noxus',5
-    UNION ALL SELECT 'flex-queue','patatas-fritas',5
-    UNION ALL SELECT 'flex-queue','agua',5
-
-    -- 2XKO
-    UNION ALL SELECT '2xko','noxus',1
-    UNION ALL SELECT '2xko','patatas-fritas',1
-    UNION ALL SELECT '2xko','nuggets',1
-    UNION ALL SELECT '2xko','coca-cola',1
-    UNION ALL SELECT '2xko','helado',1
+    -- Pack Cards (Hamburguesa TFT + Patatas + Bebida)
+    UNION ALL SELECT 'pack-cards', 'pengu', 1
+    UNION ALL SELECT 'pack-cards', 'patatas-fritas', 1
+    UNION ALL SELECT 'pack-cards', 'coca-cola', 1
 
 ) d
-
-JOIN productos combo ON combo.slug=d.combo
-JOIN productos componente ON componente.slug=d.componente;
-
--- ============================================================
--- 18. OFERTAS
--- ============================================================
-
-INSERT INTO ofertas
-(nombre,descripcion,tipo,valor,codigo,
- fecha_inicio,fecha_fin,activa)
-
-VALUES
-
-(
-    'Oferta de lanzamiento',
-    '10 por ciento de descuento en hamburguesas seleccionadas',
-    'descuento',10.00,NULL,
-    '2026-01-01 00:00:00',
-    '2027-12-31 23:59:59',
-    TRUE
-),
-
-(
-    'Bebidas 2x1',
-    'Dos bebidas por el precio de una',
-    '2x1',NULL,NULL,
-    '2026-01-01 00:00:00',
-    '2027-12-31 23:59:59',
-    TRUE
-),
-
-(
-    'Flex Queue especial',
-    'Cinco euros de descuento en Flex Queue',
-    'combo',5.00,NULL,
-    '2026-01-01 00:00:00',
-    '2027-12-31 23:59:59',
-    TRUE
-),
-
-(
-    'Codigo RIOT10',
-    'Codigo promocional del 10 por ciento',
-    'codigo',10.00,'RIOT10',
-    '2026-01-01 00:00:00',
-    '2027-12-31 23:59:59',
-    TRUE
-),
-
-(
-    'Codigo GAMER20',
-    'Codigo promocional del 20 por ciento',
-    'codigo',20.00,'GAMER20',
-    '2026-01-01 00:00:00',
-    '2027-12-31 23:59:59',
-    TRUE
-),
-
-(
-    'Oferta caducada',
-    'Promocion caducada para pruebas',
-    'codigo',10.00,'OLD2026',
-    '2026-01-01 00:00:00',
-    '2026-06-30 23:59:59',
-    FALSE
-);
+JOIN productos combo ON combo.slug = d.combo
+JOIN productos componente ON componente.slug = d.componente;
 
 -- ============================================================
--- 19. PRODUCTOS DE CADA OFERTA
+-- 17. OFERTAS
 -- ============================================================
 
-INSERT INTO oferta_producto
-(oferta_id,producto_id)
+INSERT INTO ofertas (nombre, descripcion, tipo, valor, codigo, fecha_inicio, fecha_fin, activa) VALUES
+('Oferta de lanzamiento', '10% de descuento en hamburguesas de LoL', 'descuento', 10.00, NULL, '2026-01-01 00:00:00', '2027-12-31 23:59:59', TRUE),
+('Bebidas 2x1', 'Dos bebidas por el precio de una', '2x1', NULL, NULL, '2026-01-01 00:00:00', '2027-12-31 23:59:59', TRUE),
+('Codigo RIOT10', 'Código promocional del 10%', 'codigo', 10.00, 'RIOT10', '2026-01-01 00:00:00', '2027-12-31 23:59:59', TRUE),
+('Codigo GAMER20', 'Código promocional del 20%', 'codigo', 20.00, 'GAMER20', '2026-01-01 00:00:00', '2027-12-31 23:59:59', TRUE);
 
-SELECT o.id,p.id
+-- ============================================================
+-- 18. PRODUCTOS DE CADA OFERTA
+-- ============================================================
 
+INSERT INTO oferta_producto (oferta_id, producto_id)
+SELECT o.id, p.id
 FROM ofertas o
-
-JOIN productos p ON
-(
-    o.nombre='Oferta de lanzamiento'
-    AND p.slug IN ('noxus','zaun','demacia')
-)
-OR
-(
-    o.nombre='Bebidas 2x1'
-    AND p.slug IN ('coca-cola','agua')
-)
-OR
-(
-    o.nombre='Flex Queue especial'
-    AND p.slug='flex-queue'
-)
-OR
-(
-    o.nombre='Codigo RIOT10'
-    AND p.slug IN ('bind','2xko')
-)
-OR
-(
-    o.nombre='Codigo GAMER20'
-    AND p.slug IN ('alistar','tft')
-)
-OR
-(
-    o.nombre='Oferta caducada'
-    AND p.slug='spike'
-);
+JOIN productos p ON 
+(o.nombre = 'Oferta de lanzamiento' AND p.slug IN ('noxus','zaun','piltover')) OR
+(o.nombre = 'Bebidas 2x1' AND p.slug IN ('coca-cola','agua')) OR
+(o.nombre = 'Codigo RIOT10' AND p.slug IN ('bind','tag-team')) OR
+(o.nombre = 'Codigo GAMER20' AND p.slug IN ('hamburguesa-alistar','hyperroll'));
 
 -- ============================================================
--- 20. USUARIOS DE PRUEBA
+-- 19. USUARIOS DE PRUEBA
 -- ============================================================
 
--- Hashes bcrypt reales generados con PHP password_hash()
--- Admin123!
--- User123!
-
-INSERT INTO usuarios
-(nombre,email,password,telefono,direccion,
- fecha_nacimiento,rol)
-
-VALUES
-
-(
-    'admin',
-    'admin@rioteats.local',
-    '$2y$12$1BSXuAxdTT7o1Wefne1DqOaEEqQ5K/dq2GNTg5dNxkx57svyep/Y6',
-    '600111222',
-    'Calle del Administrador 10, Barcelona',
-    '1995-05-10',
-    'admin'
-),
-
-(
-    'user_1',
-    'user_1@rioteats.local',
-    '$2y$12$y21TMfgZenHdwmHHrgHERerfYcPPPPeCYifJ48f3Nv7IDYXiWWhFu',
-    '600333444',
-    'Avenida del Gamer 25, Barcelona',
-    '2001-08-15',
-    'usuario'
-);
+INSERT INTO usuarios (nombre, email, password, telefono, direccion, fecha_nacimiento, rol) VALUES
+('admin', 'admin@rioteats.local', '$2y$12$1BSXuAxdTT7o1Wefne1DqOaEEqQ5K/dq2GNTg5dNxkx57svyep/Y6', '600111222', 'Calle Admin 10, Barcelona', '1995-05-10', 'admin'),
+('user_1', 'user_1@rioteats.local', '$2y$12$y21TMfgZenHdwmHHrgHERerfYcPPPPeCYifJ48f3Nv7IDYXiWWhFu', '600333444', 'Avenida Gamer 25, Barcelona', '2001-08-15', 'usuario');
 
 -- ============================================================
--- 21. PEDIDOS DE PRUEBA
+-- 20. PEDIDOS DE PRUEBA
 -- ============================================================
 
--- ADMIN 1:
--- ENTREGADO / PAGADO / OFERTA 10%
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,oferta_id,codigo_oferta,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='admin'),
-    'entregado','2026-10-20 14:30:00',
-    18.70,1.19,17.51,
-    'tarjeta','pagado',
-    (SELECT id FROM ofertas WHERE nombre='Oferta de lanzamiento'),
-    NULL,'ADM-001'
-);
-
--- ADMIN 2:
--- CANCELADO / PAGO FALLIDO / SIN OFERTA
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='admin'),
-    'cancelado','2026-10-21 20:15:00',
-    18.40,0.00,18.40,
-    'tarjeta','fallido','ADM-002'
-);
-
--- ADMIN 3:
--- PREPARANDO / PAGO PENDIENTE
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='admin'),
-    'preparando','2026-10-29 13:00:00',
-    24.30,0.00,24.30,
-    'simulado','pendiente','ADM-003'
-);
-
--- ADMIN 4:
--- ENTREGADO / PAGADO / OFERTA COMBO
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,oferta_id,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='admin'),
-    'entregado','2026-10-25 21:00:00',
-    75.50,5.00,70.50,
-    'tarjeta','pagado',
-    (SELECT id FROM ofertas WHERE nombre='Flex Queue especial'),
-    'ADM-004'
-);
-
--- USER 1:
--- ENTREGADO / PAGADO / SIN OFERTA
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='user_1'),
-    'entregado','2026-10-18 15:30:00',
-    18.80,0.00,18.80,
-    'efectivo','pagado','USR-001'
-);
-
--- USER 2:
--- CONFIRMADO / PAGADO / CUPON GAMER20
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,oferta_id,codigo_oferta,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='user_1'),
-    'confirmado','2026-10-28 19:45:00',
-    31.80,6.36,25.44,
-    'tarjeta','pagado',
-    (SELECT id FROM ofertas WHERE codigo='GAMER20'),
-    'GAMER20','USR-002'
-);
-
--- USER 3:
--- ENVIADO / PAGADO / SIN OFERTA
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='user_1'),
-    'enviado','2026-10-29 20:00:00',
-    17.90,0.00,17.90,
-    'tarjeta','pagado','USR-003'
-);
-
--- USER 4:
--- PENDIENTE / PAGO PENDIENTE
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='user_1'),
-    'pendiente','2026-10-30 18:00:00',
-    7.40,0.00,7.40,
-    'simulado','pendiente','USR-004'
-);
-
--- USER 5:
--- ENTREGADO / PAGADO / OFERTA 2X1
-
-INSERT INTO pedidos
-(usuario_id,estado,fecha_pedido,subtotal,descuento,total,
- metodo_pago,estado_pago,oferta_id,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM usuarios WHERE nombre='user_1'),
-    'entregado','2026-10-26 12:30:00',
-    5.00,2.50,2.50,
-    'tarjeta','pagado',
-    (SELECT id FROM ofertas WHERE nombre='Bebidas 2x1'),
-    'USR-005'
-);
+INSERT INTO pedidos (usuario_id, estado, fecha_pedido, subtotal, descuento, total, metodo_pago, estado_pago, oferta_id, codigo_oferta, referencia_prueba) VALUES
+((SELECT id FROM usuarios WHERE nombre='admin'), 'entregado', '2026-10-20 14:30:00', 17.90, 1.79, 16.11, 'tarjeta', 'pagado', (SELECT id FROM ofertas WHERE nombre='Oferta de lanzamiento'), NULL, 'ADM-001'),
+((SELECT id FROM usuarios WHERE nombre='admin'), 'cancelado', '2026-10-21 20:15:00', 18.40, 0.00, 18.40, 'tarjeta', 'fallido', NULL, NULL, 'ADM-002'),
+((SELECT id FROM usuarios WHERE nombre='admin'), 'preparando', '2026-10-29 13:00:00', 24.30, 0.00, 24.30, 'simulado', 'pendiente', NULL, NULL, 'ADM-003'),
+((SELECT id FROM usuarios WHERE nombre='admin'), 'entregado', '2026-10-25 21:00:00', 69.90, 0.00, 69.90, 'tarjeta', 'pagado', NULL, NULL, 'ADM-004'),
+((SELECT id FROM usuarios WHERE nombre='user_1'), 'entregado', '2026-10-18 15:30:00', 18.50, 0.00, 18.50, 'efectivo', 'pagado', NULL, NULL, 'USR-001'),
+((SELECT id FROM usuarios WHERE nombre='user_1'), 'confirmado', '2026-10-28 19:45:00', 32.80, 6.56, 26.24, 'tarjeta', 'pagado', (SELECT id FROM ofertas WHERE codigo='GAMER20'), 'GAMER20', 'USR-002'),
+((SELECT id FROM usuarios WHERE nombre='user_1'), 'enviado', '2026-10-29 20:00:00', 16.50, 0.00, 16.50, 'tarjeta', 'pagado', NULL, NULL, 'USR-003'),
+((SELECT id FROM usuarios WHERE nombre='user_1'), 'pendiente', '2026-10-30 18:00:00', 7.40, 0.00, 7.40, 'simulado', 'pendiente', NULL, NULL, 'USR-004'),
+((SELECT id FROM usuarios WHERE nombre='user_1'), 'entregado', '2026-10-26 12:30:00', 5.00, 2.50, 2.50, 'tarjeta', 'pagado', (SELECT id FROM ofertas WHERE nombre='Bebidas 2x1'), NULL, 'USR-005');
 
 -- ============================================================
--- 22. DETALLES DE PEDIDOS
+-- 21. DETALLES DE PEDIDOS
 -- ============================================================
 
--- ADM-001
+INSERT INTO pedido_detalle (pedido_id, producto_id, nombre_producto, precio_unitario, cantidad, subtotal, referencia_prueba) VALUES
+((SELECT id FROM pedidos WHERE referencia_prueba='ADM-001'), (SELECT id FROM productos WHERE slug='noxus'), 'Noxus', 11.90, 1, 11.90, 'ADM-001-01'),
+((SELECT id FROM pedidos WHERE referencia_prueba='ADM-001'), (SELECT id FROM productos WHERE slug='patatas-fritas'), 'Patatas Fritas', 3.50, 1, 3.50, 'ADM-001-02'),
+((SELECT id FROM pedidos WHERE referencia_prueba='ADM-001'), (SELECT id FROM productos WHERE slug='coca-cola'), 'Coca-Cola', 2.50, 1, 2.50, 'ADM-001-03'),
 
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
+((SELECT id FROM pedidos WHERE referencia_prueba='ADM-002'), (SELECT id FROM productos WHERE slug='zaun'), 'Zaun', 12.90, 1, 12.90, 'ADM-002-01'),
+((SELECT id FROM pedidos WHERE referencia_prueba='ADM-002'), (SELECT id FROM productos WHERE slug='tequenos'), 'Tequeños', 6.50, 1, 6.50, 'ADM-002-02'),
 
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-001'),
-    (SELECT id FROM productos WHERE slug='noxus'),
-    'Noxus',11.90,1,12.70,'ADM-001-01'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-001'),
-    (SELECT id FROM productos WHERE slug='patatas-fritas'),
-    'Patatas fritas',3.50,1,3.50,'ADM-001-02'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-001'),
-    (SELECT id FROM productos WHERE slug='coca-cola'),
-    'Coca-Cola',2.50,1,2.50,'ADM-001-03'
-);
+((SELECT id FROM pedidos WHERE referencia_prueba='USR-001'), (SELECT id FROM productos WHERE slug='bind'), 'Bind', 13.50, 1, 13.50, 'USR-001-01'),
+((SELECT id FROM pedidos WHERE referencia_prueba='USR-001'), (SELECT id FROM productos WHERE slug='patatas-fritas'), 'Patatas Fritas', 3.50, 1, 3.50, 'USR-001-02'),
+((SELECT id FROM pedidos WHERE referencia_prueba='USR-001'), (SELECT id FROM productos WHERE slug='agua'), 'Agua', 1.50, 1, 1.50, 'USR-001-03'),
 
--- ADM-002
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-002'),
-    (SELECT id FROM productos WHERE slug='zaun'),
-    'Zaun',12.90,1,12.90,'ADM-002-01'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-002'),
-    (SELECT id FROM productos WHERE slug='nuggets'),
-    'Nuggets',5.50,1,5.50,'ADM-002-02'
-);
-
--- ADM-003
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-003'),
-    (SELECT id FROM productos WHERE slug='solo-queue'),
-    'Solo Queue',17.90,1,17.90,'ADM-003-01'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-003'),
-    (SELECT id FROM productos WHERE slug='coca-cola'),
-    'Coca-Cola',2.50,1,2.50,'ADM-003-02'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-003'),
-    (SELECT id FROM productos WHERE slug='helado'),
-    'Helado',3.90,1,3.90,'ADM-003-03'
-);
-
--- ADM-004
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='ADM-004'),
-    (SELECT id FROM productos WHERE slug='flex-queue'),
-    'Flex Queue',75.50,1,75.50,'ADM-004-01'
-);
-
--- USR-001
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-001'),
-    (SELECT id FROM productos WHERE slug='bind'),
-    'Bind',13.50,1,13.80,'USR-001-01'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-001'),
-    (SELECT id FROM productos WHERE slug='patatas-fritas'),
-    'Patatas fritas',3.50,1,3.50,'USR-001-02'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-001'),
-    (SELECT id FROM productos WHERE slug='agua'),
-    'Agua',1.50,1,1.50,'USR-001-03'
-);
-
--- USR-002
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-002'),
-    (SELECT id FROM productos WHERE slug='alistar'),
-    'Alistar',16.90,1,16.90,'USR-002-01'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-002'),
-    (SELECT id FROM productos WHERE slug='tft'),
-    'TFT',14.90,1,14.90,'USR-002-02'
-);
-
--- USR-003
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-003'),
-    (SELECT id FROM productos WHERE slug='solo-queue'),
-    'Solo Queue',17.90,1,17.90,'USR-003-01'
-);
-
--- USR-004
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-004'),
-    (SELECT id FROM productos WHERE slug='patatas-fritas'),
-    'Patatas fritas',3.50,1,3.50,'USR-004-01'
-),
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-004'),
-    (SELECT id FROM productos WHERE slug='helado'),
-    'Helado',3.90,1,3.90,'USR-004-02'
-);
-
--- USR-005: DOS COCA-COLAS
-
-INSERT INTO pedido_detalle
-(pedido_id,producto_id,nombre_producto,precio_unitario,
- cantidad,subtotal,referencia_prueba)
-
-VALUES
-(
-    (SELECT id FROM pedidos WHERE referencia_prueba='USR-005'),
-    (SELECT id FROM productos WHERE slug='coca-cola'),
-    'Coca-Cola',2.50,2,5.00,'USR-005-01'
-);
+((SELECT id FROM pedidos WHERE referencia_prueba='USR-005'), (SELECT id FROM productos WHERE slug='coca-cola'), 'Coca-Cola', 2.50, 2, 5.00, 'USR-005-01');
 
 -- ============================================================
--- 23. INGREDIENTES INCLUIDOS EN PEDIDOS
+-- 22. HISTORIAL DE INGREDIENTES EN PEDIDOS
 -- ============================================================
 
-INSERT INTO pedido_detalle_ingrediente
-(pedido_detalle_id,ingrediente_id,nombre_ingrediente,
- precio_extra,accion)
+INSERT INTO pedido_detalle_ingrediente (pedido_detalle_id, ingrediente_id, nombre_ingrediente, precio_extra, accion) VALUES
+((SELECT id FROM pedido_detalle WHERE referencia_prueba='ADM-001-01'), (SELECT id FROM ingredientes WHERE nombre='Jalapeños'), 'Jalapeños', 0.80, 'añadido'),
+((SELECT id FROM pedido_detalle WHERE referencia_prueba='ADM-002-01'), (SELECT id FROM ingredientes WHERE nombre='Jalapeños'), 'Jalapeños', 0.00, 'quitado'),
+((SELECT id FROM pedido_detalle WHERE referencia_prueba='USR-001-01'), (SELECT id FROM ingredientes WHERE nombre='Pepinillos'), 'Pepinillos', 0.00, 'quitado');
 
-SELECT
-pd.id,
-i.id,
-i.nombre,
-0.00,
-'incluido'
-
-FROM pedido_detalle pd
-
-JOIN pedidos pe ON pe.id=pd.pedido_id
-JOIN producto_ingrediente pi ON pi.producto_id=pd.producto_id
-JOIN ingredientes i ON i.id=pi.ingrediente_id
-
-WHERE pe.referencia_prueba IN (
-    'ADM-001',
-    'ADM-002',
-    'USR-001',
-    'USR-002'
-);
+-- Re-activar verificación de llaves foráneas
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
--- 24. INGREDIENTES AÑADIDOS Y ELIMINADOS
+-- 23. CONSULTAS DE COMPROBACIÓN (SELECT * DE CADA TABLA)
 -- ============================================================
 
--- ADM-001: AÑADIR JALAPENOS A NOXUS
-
-INSERT INTO pedido_detalle_ingrediente
-(pedido_detalle_id,ingrediente_id,nombre_ingrediente,
- precio_extra,accion)
-
-SELECT
-pd.id,i.id,i.nombre,i.precio_extra,'añadido'
-
-FROM pedido_detalle pd
-JOIN ingredientes i ON i.nombre='Jalapenos'
-
-WHERE pd.referencia_prueba='ADM-001-01';
-
--- ADM-002: QUITAR JALAPENOS DE ZAUN
-
-INSERT INTO pedido_detalle_ingrediente
-(pedido_detalle_id,ingrediente_id,nombre_ingrediente,
- precio_extra,accion)
-
-SELECT
-pd.id,i.id,i.nombre,0.00,'quitado'
-
-FROM pedido_detalle pd
-JOIN ingredientes i ON i.nombre='Jalapenos'
-
-WHERE pd.referencia_prueba='ADM-002-01';
-
--- USR-001: QUITAR PEPINILLOS DE BIND
-
-INSERT INTO pedido_detalle_ingrediente
-(pedido_detalle_id,ingrediente_id,nombre_ingrediente,
- precio_extra,accion)
-
-SELECT
-pd.id,i.id,i.nombre,0.00,'quitado'
-
-FROM pedido_detalle pd
-JOIN ingredientes i ON i.nombre='Pepinillos'
-
-WHERE pd.referencia_prueba='USR-001-01';
-
--- USR-001: AÑADIR TOMATE A BIND
-
-INSERT INTO pedido_detalle_ingrediente
-(pedido_detalle_id,ingrediente_id,nombre_ingrediente,
- precio_extra,accion)
-
-SELECT
-pd.id,i.id,i.nombre,i.precio_extra,'añadido'
-
-FROM pedido_detalle pd
-JOIN ingredientes i ON i.nombre='Tomate'
-
-WHERE pd.referencia_prueba='USR-001-01';
-
--- ============================================================
--- 25. COMPROBACIONES DE PRECIOS
--- ============================================================
-
--- COMPROBAR QUE LOS PEDIDOS CUADRAN
-
-SELECT
-p.referencia_prueba,
-p.subtotal,
-COALESCE(SUM(pd.subtotal),0) AS subtotal_detalles,
-p.descuento,
-p.total,
-p.subtotal-p.descuento AS total_calculado,
-
-CASE
-    WHEN p.subtotal=COALESCE(SUM(pd.subtotal),0)
-     AND p.total=p.subtotal-p.descuento
-    THEN 'CORRECTO'
-    ELSE 'ERROR'
-END AS comprobacion
-
-FROM pedidos p
-
-LEFT JOIN pedido_detalle pd ON pd.pedido_id=p.id
-
-WHERE p.referencia_prueba IS NOT NULL
-
-GROUP BY p.id
-
-ORDER BY p.referencia_prueba;
-
--- ============================================================
--- 26. CONSULTAS GENERALES
--- ============================================================
-
-SELECT * FROM usuarios ORDER BY id;
-
-SELECT * FROM categorias ORDER BY id;
-
-SELECT * FROM productos ORDER BY categoria_id,nombre;
-
-SELECT * FROM ingredientes ORDER BY nombre;
-
-SELECT * FROM producto_ingrediente ORDER BY producto_id;
-
-SELECT * FROM producto_combo ORDER BY combo_id;
-
-SELECT * FROM ofertas ORDER BY id;
-
-SELECT * FROM oferta_producto ORDER BY oferta_id;
-
-SELECT * FROM pedidos ORDER BY fecha_pedido DESC;
-
-SELECT * FROM pedido_detalle ORDER BY pedido_id;
-
-SELECT * FROM pedido_detalle_ingrediente ORDER BY pedido_detalle_id;
-
--- ============================================================
--- 27. HISTORIAL DE PEDIDOS CON USUARIOS
--- ============================================================
-
-SELECT
-p.referencia_prueba,
-u.nombre AS usuario,
-u.rol,
-p.estado,
-p.estado_pago,
-p.fecha_pedido,
-p.subtotal,
-p.descuento,
-p.total,
-o.nombre AS oferta,
-p.codigo_oferta
-
-FROM pedidos p
-
-JOIN usuarios u ON u.id=p.usuario_id
-
-LEFT JOIN ofertas o ON o.id=p.oferta_id
-
-ORDER BY p.fecha_pedido DESC;
-
--- ============================================================
--- 28. RESUMEN DE REGISTROS
--- ============================================================
-
-SELECT 'usuarios' tabla,COUNT(*) registros FROM usuarios
-UNION ALL
-SELECT 'categorias',COUNT(*) FROM categorias
-UNION ALL
-SELECT 'productos',COUNT(*) FROM productos
-UNION ALL
-SELECT 'ingredientes',COUNT(*) FROM ingredientes
-UNION ALL
-SELECT 'producto_ingrediente',COUNT(*) FROM producto_ingrediente
-UNION ALL
-SELECT 'producto_combo',COUNT(*) FROM producto_combo
-UNION ALL
-SELECT 'ofertas',COUNT(*) FROM ofertas
-UNION ALL
-SELECT 'oferta_producto',COUNT(*) FROM oferta_producto
-UNION ALL
-SELECT 'pedidos',COUNT(*) FROM pedidos
-UNION ALL
-SELECT 'pedido_detalle',COUNT(*) FROM pedido_detalle
-UNION ALL
-SELECT 'pedido_detalle_ingrediente',COUNT(*) FROM pedido_detalle_ingrediente;
-
--- ============================================================
--- FIN RIOT EATS
--- ============================================================
+SELECT * FROM usuarios;
+SELECT * FROM categorias;
+SELECT * FROM productos ORDER BY id ASC;
+SELECT * FROM ingredientes;
+SELECT * FROM producto_ingrediente;
+SELECT * FROM producto_combo;
+SELECT * FROM ofertas;
+SELECT * FROM oferta_producto;
+SELECT * FROM pedidos;
+SELECT * FROM pedido_detalle;
+SELECT * FROM pedido_detalle_ingrediente;

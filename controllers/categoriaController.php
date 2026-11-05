@@ -1,25 +1,21 @@
 <?php
-// Carga las dependencias del modelo usando rutas relativas seguras
-include_once(__DIR__ . "/../models/CategoriaDAO.php");
-include_once(__DIR__ . "/../models/Categoria.php");
+include_once("models/CategoriaDAO.php");
+include_once("models/Categoria.php");
 
-class CategoriaController
-{
-    // Método por defecto: muestra el listado o redirige al formulario de crear
-    public function index(): void
-    {
-        $this->crear();
+class CategoriaController {
+    public function index() {
+        $categorias = CategoriaDAO::getAll();
+        $view = "views/categorias/lista-categorias.php";
+        include_once 'views/main.php';
     }
 
-    // Muestra la vista con el formulario HTML para crear una categoría
-    public function crear(): void
-    {
-        include_once(__DIR__ . "/../views/categoria/crear.php");
+    public function crearCategoria() {
+        $view = "views/categorias/crear-categorias.php";
+        include_once "/../views/categoria/crear.php";
     }
 
     // Recibe los datos del formulario POST y los guarda en la BD
-    public function guardar(): void
-    {
+    public function guardarCategoria() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre = $_POST['nombre'] ?? '';
             $slug = $_POST['slug'] ?? '';
@@ -30,7 +26,7 @@ class CategoriaController
             $categoria = new Categoria($nombre, $slug, $descripcion, $activa);
 
             // Guardamos en MySQL usando CategoriaDAO
-            $exito = CategoriaDAO::store($categoria);
+            $exito = CategoriaDAO::guardarCategoria($categoria);
 
             if ($exito) {
                 echo "<h2 style='color: green;'>¡Categoría guardada con éxito en MySQL!</h2>";
@@ -39,6 +35,33 @@ class CategoriaController
                 echo "<h2 style='color: red;'>Error al guardar la categoría.</h2>";
             }
         }
+    }
+
+    public function eliminarCategoria() {
+        if (!isset($_GET['id']) || !ctype_digit((string) $_GET['id'])) {
+            header('Location:?controller=categoria');
+            exit;
+        }
+
+        CategoriaDAO::eliminarCategoria((int) $_GET['id']);
+        header('Location:?controller=categoria');
+        exit;
+    }
+
+    public function mostrarCategorias() {
+        if (!isset($_GET['id']) || !ctype_digit((string) $_GET['id'])) {
+            header('Location:?controller=categoria');
+            exit;
+        }
+
+        $producto = CategoriaDAO::getById((int) $_GET['id']);
+        if ($producto === null) {
+            header('Location:?controller=categoria');
+            exit;
+        }
+
+        $view = "views/categorias/vista.php";
+        include_once 'views/main.php';
     }
 }
 ?>

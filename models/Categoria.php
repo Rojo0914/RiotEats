@@ -9,7 +9,8 @@ class Categoria {
     private ?string $descripcion;
     private bool $activa;
 
-    public function __construct(string $nombre, string $slug, ?string $descripcion = null, bool $activa = true, ?int $id = null) {
+    public function __construct(?string $nombre= null, ?string $slug = null, ?string $descripcion = null, bool $activa = true, ?int $id = null) {
+        // poner if is null
         $this->id = $id;
         $this->nombre = $nombre;
         $this->slug = $slug;

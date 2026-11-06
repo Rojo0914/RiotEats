@@ -1,7 +1,5 @@
 <?php
 
-// Clase Categoría (Hamburguesa)
-
 class Categoria {
     private ?int $id; // ?int es para decir que puede ser NULL
     private string $nombre;
@@ -11,11 +9,21 @@ class Categoria {
 
     public function __construct(?string $nombre= null, ?string $slug = null, ?string $descripcion = null, bool $activa = true, ?int $id = null) {
         // poner if is null
-        $this->id = $id;
-        $this->nombre = $nombre;
-        $this->slug = $slug;
-        $this->descripcion = $descripcion;
-        $this->activa = $activa;
+        if ($id !== null) {
+            $this->id = $id;
+        }
+        if ($nombre !== null) {
+            $this->nombre = $nombre;
+        }
+        if ($slug !== null) {
+            $this->slug = $slug;
+        }
+        if ($descripcion !== null) {
+            $this->descripcion = $descripcion;
+        }
+        if ($activa !== null) {
+            $this->activa = $activa;
+        }
     }
 
     // GETTERS: Necesarios para que CategoriaDAO pueda leer las propiedades privadas

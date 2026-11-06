@@ -1,27 +1,42 @@
-<footer>
-    <div class="footer-container">
-        <div class="footer-top">
-            <div class="footer-brand">
-                <i class="fa-solid fa-hand-fist"></i> RIOT EATS
-            </div>
-            <ul class="footer-links">
-                <li><a href="#">Física</a></li>
-                <li><a href="#">Solución</a></li>
-                <li><a href="#">Legal</a></li>
-                <li><a href="#">Aviso de Privacidad</a></li>
-                <li><a href="#">Términos de Servicio</a></li>
-                <li><a href="#">Atención al Cliente</a></li>
-                <li><a href="#">Política de Cookies</a></li>
-            </ul>
-            <div class="footer-socials">
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-discord"></i></a>
-                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p><a href="#">Preferencias de cookies</a> | © 2026 Riot Eats, Inc. Todos los derechos reservados.</p>
-        </div>
+<footer class="foot" id="">
+    <img class="logo" src="" alt="Riot Eats">
+    <nav>
+        <p>
+            <a href="#">PRENSA</a>
+            <a href="#">SEGURIDAD</a>
+            <a href="#">LEGAL</a>
+            <a href="#">AVISO DE PRIVACIDAD</a>
+            <a href="#">TERMINOS DE SERVICIO</a>
+            <a href="#">ASISTENCIA AL CLIENTE</a>
+            <a href="#">VERIFICAR EN LÍNEA</a>
+            <a href="#">ACCESIBILIDAD</a>
+            <a href="#">INFORMES ANUALES</a>
+            <a href="#">PACTO DE LA CLIENTELA</a>
+        </p>
+    </nav>
+    <div class="soc">
+        <a href="#">
+            <img src="" alt="X">
+        </a>
+        <a href="#">
+            <img src="" alt="Instagram">
+        </a>
+        <a href="#">
+            <img src="" alt="Tik Tok">
+        </a>
+        <a href="#">
+            <img src="" alt="LinkedIn">
+        </a>
+        <a href="#">
+            <img src="" alt="Facebook">
+        </a>
+        <a href="#">
+            <img src="" alt="YouTube">
+        </a>
     </div>
+    <hr>
+    
+    <small>
+        Preferencias de cookies | <span>© 2026 Riot Eats, Inc. Todos los derechos reservados.</span>
+    </small>
 </footer>

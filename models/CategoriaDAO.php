@@ -24,7 +24,6 @@ class CategoriaDAO {
         return $categorias;
     }
 
-    
     public static function getById($id) {
 
         $con = DataBase::connect();
@@ -42,7 +41,7 @@ class CategoriaDAO {
         return $producto ?: null;
     }
 
-    public static function guardarCategoria($categoria) {
+    public static function insertarCategoria($categoria) {
     //     $con = DataBase::connect();
     //     $stmt = $con->prepare("INSERT INTO camisetas (nombre, talla, precio) VALUES (?, ?, ?)");
 

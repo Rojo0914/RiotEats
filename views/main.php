@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daw2mvc — Productos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Riot Eats</title>
+    <link rel="stylesheet" href="<?= url ?>styles.css">
     <style>
-        body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.5; }
-        table { border-collapse: collapse; width: 100%; max-width: 640px; }
-        th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
-        th { background: #f4f4f4; }
-        a { margin-right: 0.75rem; }
-        form { display: flex; flex-direction: column; gap: 0.75rem; max-width: 320px; }
-        label { display: flex; flex-direction: column; gap: 0.25rem; }
-        input, select, button { padding: 0.4rem 0.5rem; font: inherit; }
-    </style>
+/*     
+    body {
+    background-color: black;
+    color: #fff;
+    font: 700 13px/1.2 Inter, system-ui, sans-serif
+} */
+</style>
 </head>
-
 <body>
-    <?php include_once $view; ?>
-</body>
+<div class="body">
+    
+    <?php include_once("views/header/header.php"); ?>
 
+    <main>
+        <?php include_once($view); ?>
+    </main>
+
+    <?php include_once("views/footer/footer.php"); ?>
+</div>
+</body>
 </html>

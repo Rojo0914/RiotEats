@@ -1,19 +1,30 @@
-<header class="hero-header">
-    <nav class="navbar">
-        <a href="../../index.php" class="logo">
-            <i class="fa-solid fa-hand-fist"></i> RIOT EATS
+<header class="hero">
+    <nav class="nav">
+        
+        <a href="../../index.php">
+            <img class="logo" src="" alt="Riot Eats">
         </a>
-        <ul class="nav-links">
-            <li><a href="../../index.php?controller=categoria&action=index" class="active">Carta</a></li>
-            <li><a href="#">Promociones</a></li>
-            <li><a href="#">Contáctanos</a></li>
-        </ul>
-        <div class="nav-actions">
-            <span class="lang-select"><i class="fa-solid fa-globe"></i></span>
-            <a href="#" class="btn-cart">
-                <i class="fa-solid fa-cart-shopping"></i> Carrito
-            </a>
-        </div>
+        
+        <a href="">
+            Carta
+        </a>
+
+        <a href="">
+            Promociones
+        </a>
+
+        <a href="">
+            Contáctanos
+        </a>
+
+        <img src="" alt="Idioma">
+        
+        <!-- Botón Carrito -->
+        <a class="btn s" href="">
+            <img src="img/icon-cart.svg" alt="" width="24" height="24">
+            Carrito
+        </a>
+
     </nav>
-    <h1 class="hero-title">Carta</h1>
+
 </header>

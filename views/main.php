@@ -5,14 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Riot Eats</title>
     <link rel="stylesheet" href="<?= url ?>styles.css">
-    <style>
-/*     
-    body {
-    background-color: black;
-    color: #fff;
-    font: 700 13px/1.2 Inter, system-ui, sans-serif
-} */
-</style>
 </head>
 <body>
 <div class="body">

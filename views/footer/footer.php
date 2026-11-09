@@ -1,5 +1,5 @@
 <footer class="foot" id="">
-    <img class="logo" src="" alt="Riot Eats">
+    <img class="logo" src="<?php echo url ?>/img/Logo/Logo-Blanco.png" alt="Riot Eats">
     <nav>
         <p>
             <a href="#">PRENSA</a>
@@ -16,22 +16,22 @@
     </nav>
     <div class="soc">
         <a href="#">
-            <img src="" alt="X">
+            <img src="<?php echo url ?>/img/svg/X.svg" alt="X">
         </a>
         <a href="#">
-            <img src="" alt="Instagram">
+            <img src="<?php echo url ?>/img/svg/Instagram.svg" alt="Instagram">
         </a>
         <a href="#">
-            <img src="" alt="Tik Tok">
+            <img src="<?php echo url ?>/img/svg/TikTok.svg" alt="Tik Tok">
         </a>
         <a href="#">
-            <img src="" alt="LinkedIn">
+            <img src="<?php echo url ?>/img/svg/Linkedin.svg" alt="LinkedIn">
         </a>
         <a href="#">
-            <img src="" alt="Facebook">
+            <img src="<?php echo url ?>/img/svg/Facebook.svg" alt="Facebook">
         </a>
         <a href="#">
-            <img src="" alt="YouTube">
+            <img src="<?php echo url ?>/img/svg/YouTube.svg" alt="YouTube">
         </a>
     </div>
     <hr>

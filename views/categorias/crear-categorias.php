@@ -1,7 +1,3 @@
-<!-- ====================================== -->
-<!-- FORMULARIO PARA CREAR UNA CATEGORÍA    -->
-<!-- ====================================== -->
-
 <h2>Crear categoría</h2>
 
 <form action="<?= url ?>index.php?controller=Categoria&action=guardar" method="POST">

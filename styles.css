@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap");
-@font-face{font-family:"Riot Sans";src:url(fonts/RiotSans-Bold.woff2);font-weight:600} */
 
+@font-face {
+    font-family: "Riot Sans";
+    src: url(fonts/RiotSans-Bold.woff2);
+    font-weight: 600;
+}
 
 * {
     box-sizing: border-box;
@@ -10,6 +14,7 @@
 
 :root {
     --red: #d1363a;
+    --red-hover: rgba(209, 54, 58, 0.8); /* #D1363A al 80% */
     --white: #f9f9f9;
     --bg: #0a0a0a;
     --bg2: #1f1f1f;
@@ -35,19 +40,19 @@ img {
     max-width: 100%;
 }
 
-h1,h2,h3,h4,.riot {
+h1, h2, h3, h4, .riot {
     font-family: "Riot Sans", Inter, sans-serif;
     font-weight: 600;
     line-height: 1;
 }
 
-h1,h2 {
+h1, h2 {
     font-size: 48px;
     color: var(--white);
 }
 
 h3 {
-    font-size: 25px;;
+    font-size: 25px;
 }
 
 .page {
@@ -60,9 +65,10 @@ h3 {
     background: var(--bg2) url(img/pattern-bg.svg) center/cover;
 }
 
-/* remolino de fondo (Figma 44:30) */
+/* ---------------------------------- */
+/* Botones                            */
+/* ---------------------------------- */
 
-/* Botones */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -76,6 +82,12 @@ h3 {
     color: #fff;
     font: 700 13px Inter, sans-serif;
     cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+    background-color: var(--red-hover);
+    border-color: var(--red-hover);
 }
 
 .btn.o {
@@ -83,23 +95,35 @@ h3 {
     border-color: var(--white);
 }
 
+.btn.o:hover {
+    background-color: rgba(249, 249, 249, 0.1);
+}
+
 .btn.s {
     width: 178px;
     height: 45px;
+    border-radius: 50px;
+}
+
+.btn.s img {
+    filter: brightness(0) invert(1);
 }
 
 .btn.xl {
     font-size: 24px;
 }
 
-/* Cabecera con imagen */
+/* ---------------------------------- */
+/* Cabecera y Navegación              */
+/* ---------------------------------- */
+
 .hero {
     position: relative;
     height: var(--h, 450px);
     overflow: hidden;
 }
 
-.hero>.bg {
+.hero > .bg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -119,83 +143,46 @@ h3 {
     align-items: center;
     gap: 32px;
     height: 106px;
-    padding-right: 34px;
+    padding: 0 34px;
+    z-index: 10;
 }
 
 .nav .logo {
-    align-self: flex-start;
-    width: 132px;
-    height: 116px;
-    margin: 1px 38px 0 0;
+    width: auto;
+    height: 48px;
+    object-fit: contain;
 }
 
+.nav > a:not(.btn) {
+    font-family: "Riot Sans", Inter, sans-serif;
+    font-size: 16px;
+    color: var(--white);
+    transition: opacity 0.2s ease;
+}
+
+.nav > a:not(.btn):hover {
+    opacity: 0.8;
+}
+
+.nav > img[alt="Idioma"],
 .nav .globe {
     margin-left: auto;
     margin-right: 9px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
 }
 
-/* Cabecera simple (pedido, dirección) */
-.bar {
-    position: relative;
-    display: grid;
-    place-items: center;
-    height: 110px;
-    padding-bottom: 12px;
-    background: var(--bar);
+.nav > img[alt="Idioma"]:hover,
+.nav .globe:hover {
+    opacity: 0.8;
 }
 
-.bar a {
-    position: absolute;
-    left: 39px;
-    top: 36px;
-}
+/* ---------------------------------- */
+/* Sección Inicio / Cocktails         */
+/* ---------------------------------- */
 
-/* Inicio: promociones */
-.promos {
-    display: grid;
-    grid-template-columns: 459px 369px;
-    gap: 51px;
-    padding: 68px 96px 151px 105px;
-}
-
-.sub {
-    margin-top: 44px;
-    font: 600 25px/1 "Riot Sans", Inter, sans-serif;
-}
-
-.promos .l img {
-    margin-top: 54px;
-    border-radius: 8px;
-}
-
-.combos {
-    display: grid;
-    gap: 24px;
-    margin-top: 54px;
-    align-content: start;
-}
-
-.combo {
-    display: flex;
-    height: 95px;
-}
-
-.combo span {
-    flex: 1;
-    padding: 26px 25px;
-    border-radius: 8px 0 0 8px;
-    background: var(--card);
-    font: 600 18px/1 "Riot Sans", Inter, sans-serif;
-}
-
-.combo img {
-    width: 148px;
-    height: 95px;
-    object-fit: cover;
-    border-radius: 0 8px 8px 0;
-}
-
-/* Inicio: cocktails y "Conoce más" */
 .cock {
     height: 1150px;
     padding-top: 62px;
@@ -264,119 +251,10 @@ h3 {
     transform: translateY(-50%);
 }
 
-/* Inicio: ¡Buscamos gente! */
-.join {
-    position: relative;
-    height: 492px;
-    background: #252423;
-}
+/* ---------------------------------- */
+/* Carta y Hamburguesas               */
+/* ---------------------------------- */
 
-.join .r {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 582.5px;
-    height: 492px;
-    object-fit: cover;
-}
-
-.panel {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 614.5px;
-    height: 492px;
-    padding: 71px 0 0 80px;
-    background: #d9d9d9;
-    color: #000;
-    clip-path: polygon(0 0, 100% 0, 81% 100%, 0 100%);
-}
-
-.panel h2 {
-    margin-left: 22px;
-    color: #000;
-}
-
-.panel p {
-    width: 453px;
-    margin-top: 25px;
-    text-align: center;
-    font-size: 20px;
-}
-
-.panel .btn {
-    margin: 125px 0 0 73px;
-}
-
-/* Pie */
-.foot {
-    position: relative;
-    height: 274px;
-    background: var(--foot);
-    font-size: 11px;
-}
-
-.foot .logo {
-    position: absolute;
-    left: 0;
-    top: -1px;
-    width: 165px;
-    height: 145px;
-}
-
-.foot nav {
-    position: absolute;
-    left: 238px;
-    top: 43px;
-    display: flex;
-    flex-direction: column;
-    gap: 33px;
-}
-
-.foot nav p {
-    display: flex;
-    gap: 34px;
-}
-
-.soc {
-    position: absolute;
-    right: 65px;
-    top: 40px;
-    display: grid;
-    grid-template-columns: repeat(3, 16px);
-    justify-content: space-between;
-    width: 142px;
-    row-gap: 30px;
-}
-
-.soc img {
-    width: 16px;
-    height: 16px;
-    object-fit: contain;
-}
-
-.foot hr {
-    position: absolute;
-    left: 34px;
-    top: 180px;
-    width: 1000px;
-    border: 0;
-    border-top: 1px solid rgba(249, 249, 249, .3);
-}
-
-/* color de la línea: ajústalo (Figma 86:26) */
-.foot small {
-    position: absolute;
-    left: 34px;
-    top: 218px;
-    font-size: 13px;
-}
-
-.foot small span {
-    font-size: 11px;
-}
-
-/* Carta y selección de hamburguesas */
 .sect {
     padding: 62px 0 118px;
 }
@@ -421,438 +299,197 @@ h3 {
     padding-bottom: 131px;
 }
 
-/* Hamburguesa: descripción, acciones y extras */
-.desc {
-    width: 380px;
-    margin: 34px 0 0 105px;
-    font-size: 20px;
-    line-height: 1.21;
-}
+/* ---------------------------------- */
+/* Pie de página (Footer)             */
+/* ---------------------------------- */
 
-.acts {
-    position: absolute;
-    left: 102px;
-    top: 511px;
-    display: flex;
-    gap: 78px;
-}
 
-.extras {
-    padding: 62px 65px 120px;
-}
 
-.extras h2 {
-    padding-left: 40px;
-}
 
-.exg {
+.foot, 
+.footer {
+    background-color: var(--foot, #252423);
+    color: var(--white, #f9f9f9);
+    padding: 3rem 4rem 2rem;
     display: grid;
-    grid-template-columns: repeat(4, 230px);
-    gap: 76px 10px;
-    margin-top: 91px;
-}
-
-.ex {
-    position: relative;
-    height: 190px;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.ex img {
-    position: absolute;
-    inset: 0;
+    grid-template-columns: 165px 1fr auto;
+    align-items: center;
+    gap: 2rem 3rem;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    box-sizing: border-box;
+    position: relative;
 }
 
-.ex small {
-    position: absolute;
-    top: 14px;
-    left: 0;
-    right: 0;
-    text-align: center;
+/* Reset de posicionamiento para elementos hijos */
+.foot *, 
+.footer * {
+    position: static;
+}
+
+/* Logo con tamaño controlado */
+.foot .logo, 
+.footer .logo {
+    width: 140px;
+    height: auto;
+    max-height: 80px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Contenedor del menú (<nav>) */
+.foot nav, 
+.footer nav {
+    width: 100%;
+}
+
+/* Párrafo que contiene todos los enlaces */
+.foot nav p, 
+.footer nav p {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 2.2rem;
+    row-gap: 1.2rem;
+    margin: 0;
+    max-width: 680px;
+}
+
+/* Enlaces del Footer */
+.foot nav a, 
+.footer nav a {
+    font-family: "Riot Sans", Inter, sans-serif;
     font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: var(--white, #f9f9f9);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
 }
 
-.ex h3 {
-    position: absolute;
-    top: 81px;
-    left: 0;
-    right: 0;
-    text-align: center;
+.foot nav a:hover, 
+.footer nav a:hover {
+    opacity: 0.75;
 }
 
-.qty {
-    position: absolute;
-    bottom: 5px;
-    left: 44px;
+/* Contenedor de Redes Sociales (Rejilla 3x2) */
+.soc, 
+.social {
+    display: grid;
+    grid-template-columns: repeat(3, 24px);
+    gap: 1.2rem 1.8rem;
+    align-items: center;
+    justify-content: end;
+}
+
+.soc a, 
+.social a {
     display: flex;
     align-items: center;
-    gap: 16px;
-}
-
-.qty button {
-    width: 45px;
-    height: 45px;
-    border: 1px solid var(--white);
-    border-radius: 50%;
-    background: none;
-    color: #fff;
-    font: 700 24px Inter, sans-serif;
-    cursor: pointer;
-}
-
-.qty b {
-    width: 17px;
-    text-align: center;
-    font: 600 24px "Riot Sans", Inter, sans-serif;
-}
-
-/* Pedido */
-.cart {
-    padding: 62px 105px 92px;
-}
-
-.cart h2 {
-    margin-bottom: 27px;
-    padding: 0;
-}
-
-.item {
-    margin-bottom: 26px;
-    border-radius: 8px;
-    background: var(--card);
-    overflow: hidden;
-}
-
-.item summary {
-    position: relative;
-    height: 196px;
-    list-style: none;
-    cursor: pointer;
-}
-
-.item summary::-webkit-details-marker {
-    display: none;
-}
-
-.item summary img {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 348px;
-    height: 196px;
-    object-fit: cover;
-}
-
-.item summary h3 {
-    position: absolute;
-    left: 25px;
-    top: 22px;
-}
-
-.pills {
-    position: absolute;
-    left: 11px;
-    top: 83px;
-    display: flex;
-    gap: 11px;
-}
-
-.tog {
-    position: absolute;
-    left: 25px;
-    bottom: 13px;
-    font: 600 24px "Riot Sans", Inter, sans-serif;
-}
-
-.tog::after {
-    content: ">";
-    display: inline-block;
-    margin-left: 12px;
-}
-
-.item[open] .tog::after {
-    transform: rotate(90deg);
-}
-
-.panel2 {
-    padding: 26px 33px 20px 23px;
-}
-
-.panel2 li {
-    line-height: 21px;
-    list-style: none;
-}
-
-.panel2 h4 {
-    margin: 20px 0 14px -2px;
-    font: 700 24px Inter, sans-serif;
-}
-
-.dots li {
-    display: flex;
-    align-items: baseline;
-}
-
-.dots i {
-    flex: 1;
-    margin: 0 6px;
-    border-bottom: 2px dotted #fff;
-}
-
-.tot {
-    margin-top: 74px;
-}
-
-.tot ul {
-    margin: 23px 0 0 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #fff;
-    font-size: 20px;
-    list-style: none;
-}
-
-.tot li {
-    margin-bottom: 21px;
-}
-
-.tot .sum {
-    margin: 40px 9px 0 0;
-    text-align: right;
-    font: 600 32px "Riot Sans", Inter, sans-serif;
-}
-
-.pay {
-    display: flex;
     justify-content: center;
-    margin-top: 59px;
+    width: 24px;
+    height: 24px;
 }
 
-/* Dirección */
-.form {
-    padding: 62px 105px 130px;
+.soc img, 
+.social img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* Fuerza a que los iconos sean blancos */
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.form h2 {
-    margin-bottom: 27px;
-    padding: 0;
+.soc img:hover, 
+.social img:hover {
+    opacity: 0.75;
+    transform: translateY(-1px);
 }
 
-.fc {
-    padding: 22px 25px 0;
-    height: 382px;
-    border-radius: 8px;
-    background: var(--card);
-}
-
-.form label {
-    display: block;
-    font: 600 25px/1 "Riot Sans", Inter, sans-serif;
-}
-
-.form input {
-    display: block;
+/* Línea separadora */
+.foot hr, 
+.footer hr {
+    grid-column: 1 / -1;
     width: 100%;
-    height: 45px;
-    margin: 24px 0 30px;
-    padding: 0 14px;
     border: 0;
-    border-radius: 8px;
-    background: var(--card);
-    color: #fff;
-    font: 700 13px Inter, sans-serif;
+    border-top: 1px solid rgba(249, 249, 249, 0.2);
+    margin: 1.5rem 0 0.5rem;
 }
 
-.row {
-    display: grid;
-    grid-template-columns: 148px 148px 1fr;
-    column-gap: 40px;
+/* Texto legal de cookies y derechos */
+.foot small, 
+.footer small {
+    grid-column: 1 / -1;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white, #f9f9f9);
 }
 
-.form .tel {
-    width: 336px;
+.foot small span, 
+.footer small span {
+    font-weight: 400;
+    opacity: 0.85;
 }
 
-.form .ok {
-    display: flex;
-    justify-content: center;
-    margin-top: 74px;
-}
 
-/* Móvil (solo la portada tiene diseño móvil en Figma) */
-@media(max-width:480px) {
 
-    h1,
-    h2 {
-        font-size: 28px
-    }
 
-    h3 {
-        font-size: 18px
-    }
 
-    .hero {
-        height: 200px
-    }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------------------------------- */
+/* Adaptación Responsive             */
+/* ---------------------------------- */
+
+@media (max-width: 900px) {
     .nav {
-        height: 52px;
-        padding-right: 19px
+        gap: 20px;
+        padding: 0 16px;
+        height: 80px;
     }
 
     .nav .logo {
-        width: 55px;
-        height: 49px;
-        margin: 2px 0 0 3px
+        height: 38px;
     }
 
-    .nav>a:not(:first-child),
-    .globe {
-        display: none
+    .nav > a:not(.btn) {
+        font-size: 14px;
     }
 
-    .nav .btn.s {
-        display: flex;
+    .btn.s {
+        width: 140px;
+        height: 40px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav {
+        gap: 12px;
+        justify-content: space-between;
+    }
+
+    .nav > a:not(:first-child):not(.btn) {
+        display: none;
+    }
+
+    .nav > img[alt="Idioma"],
+    .nav .globe {
         margin-left: auto;
-        width: 24px;
-        height: 24px;
-        border: 0;
-        background: none;
-        font-size: 0
     }
-
-    .promos {
-        display: block;
-        padding: 34px 30px 40px
-    }
-
-    .promos .l p,
-    .promos .l img,
-    .combo:nth-child(n+3) {
-        display: none
-    }
-
-    .combos {
-        margin-top: 34px;
-        gap: 23px
-    }
-
-    .cock {
-        height: auto;
-        padding: 62px 0 40px
-    }
-
-    .cock h2,
-    .cock .mt {
-        padding-left: 30px;
-        margin-left: 0
-    }
-
-    .m {
-        display: inline
-    }
-
-    .bottles {
-        overflow-x: auto;
-        margin-top: 34px
-    }
-
-    .bottles a {
-        flex: 0 0 240px
-    }
-
-    .cock .mt {
-        margin-top: 70px
-    }
-
-    .more {
-        overflow-x: auto;
-        margin: 40px 0 0 30px
-    }
-
-    .more a {
-        flex: 0 0 350px;
-        height: 320px
-    }
-
-    .join {
-        height: auto
-    }
-
-    .join .r {
-        display: none
-    }
-
-    .panel {
-        position: static;
-        width: auto;
-        height: 465px;
-        padding: 52px 62px 0;
-        clip-path: none;
-        text-align: center
-    }
-
-    .panel h2 {
-        margin: 0
-    }
-
-    .panel p {
-        width: auto;
-        margin-top: 34px;
-        font-size: 16px
-    }
-
-    .panel .btn {
-        width: 328px;
-        margin: 90px 0 0 -10px
-    }
-
-    .foot {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
-        height: auto;
-        padding: 32px 32px 60px
-    }
-
-    .foot .logo,
-    .foot nav,
-    .soc,
-    .foot hr,
-    .foot small {
-        position: static
-    }
-
-    .foot .logo {
-        width: 106px;
-        height: 93px
-    }
-
-    .foot nav,
-    .foot nav p {
-        align-items: center;
-        gap: 30px
-    }
-
-    .foot nav p {
-        flex-direction: column
-    }
-
-    .soc {
-        display: flex;
-        gap: 44px;
-        width: auto
-    }
-
-    .foot hr {
-        width: 100%
-    }
-
-    .foot small {
-        text-align: center
-    };
 }

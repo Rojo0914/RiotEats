@@ -28,7 +28,7 @@ class CategoriaController {
             // Guardamos en MySQL usando CategoriaDAO
             $exito = CategoriaDAO::guardarCategoria($categoria);
 
-            if ($exito) {
+            if ($exito) {   
                 echo "<h2 style='color: green;'>¡Categoría guardada con éxito en MySQL!</h2>";
                 echo "<a href='" . url . "index.php?controller=Categoria&action=crear'>Volver al formulario</a>";
             } else {

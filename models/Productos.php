@@ -62,4 +62,8 @@ abstract class Productos {
         $this->precio = $precio;
         return $this;
     }
+
+    // Método abstracto obligatorio para cada tipo de producto
+    abstract public function getEtiquetaCategoria(): string;
+    
 }

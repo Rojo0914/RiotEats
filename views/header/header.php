@@ -2,10 +2,10 @@
     <nav class="nav">
         
         <a href="../../index.php">
-            <img class="logo" src="" alt="Riot Eats">
+            <img class="logo" src="<?php echo url ?>img/Logo/Logo-Blanco.png" alt="Riot Eats">
         </a>
         
-        <a href="">
+        <a href="<?php echo url ?>/">
             Carta
         </a>
 
@@ -17,11 +17,11 @@
             Contáctanos
         </a>
 
-        <img src="" alt="Idioma">
+        <img src="<?php echo url ?>/img/svg/World.svg" alt="Idioma">
         
         <!-- Botón Carrito -->
         <a class="btn s" href="">
-            <img src="img/icon-cart.svg" alt="" width="24" height="24">
+            <img src="<?php echo url ?>img/svg/Carrito.svg" alt="" width="24" height="24">
             Carrito
         </a>
 

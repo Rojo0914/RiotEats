@@ -62,7 +62,8 @@ h3 {
 }
 
 .pat {
-    background: var(--bg2) url(img/pattern-bg.svg) center/cover;
+    background: var(--bg2) url(img/svg/Sombra.svg) center/cover;
+    background-repeat: no-repeat;
 }
 
 /* ---------------------------------- */
@@ -148,8 +149,8 @@ h3 {
 }
 
 .nav .logo {
-    width: auto;
-    height: 48px;
+    width: 132px;
+    height: 116px;
     object-fit: contain;
 }
 
@@ -216,8 +217,7 @@ h3 {
 }
 
 .bottles span,
-.more span,
-.tile span {
+.more span {
     position: absolute;
     left: 0;
     right: 0;
@@ -245,8 +245,7 @@ h3 {
     height: 150.5px;
 }
 
-.more span,
-.tile span {
+.more span {
     top: 50%;
     transform: translateY(-50%);
 }
@@ -264,18 +263,46 @@ h3 {
 }
 
 .tiles {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 55px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 450px);
+    justify-content: start;
+    padding: 0 105px; 
+    gap: 55px 0; 
     margin-top: 92px;
 }
 
 .tile {
     position: relative;
-    width: 350px;
+    width: 450px;
     height: 420px;
-    margin: 0 -20px;
+    clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.tile:hover {
+    transform: scale(1.02);
+    z-index: 5;
+}
+
+.tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35; 
+}
+
+.tile span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
+    font: 600 25px/1 "Riot Sans", Inter, sans-serif;
+    color: var(--white);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 2;
 }
 
 .burgers {
@@ -286,13 +313,10 @@ h3 {
 .burgers .tile {
     width: 250px;
     height: 250px;
-    margin: 0 -13.5px;
 }
 
 .burgers span {
     width: 167px;
-    left: 41px;
-    right: auto;
 }
 
 .sect.b {
@@ -302,9 +326,6 @@ h3 {
 /* ---------------------------------- */
 /* Pie de página (Footer)             */
 /* ---------------------------------- */
-
-
-
 
 .foot, 
 .footer {
@@ -320,29 +341,25 @@ h3 {
     position: relative;
 }
 
-/* Reset de posicionamiento para elementos hijos */
 .foot *, 
 .footer * {
     position: static;
 }
 
-/* Logo con tamaño controlado */
 .foot .logo, 
 .footer .logo {
-    width: 140px;
-    height: auto;
+    width: 165px;
+    height: 145px;
     max-height: 80px;
     object-fit: contain;
     display: block;
 }
 
-/* Contenedor del menú (<nav>) */
 .foot nav, 
 .footer nav {
     width: 100%;
 }
 
-/* Párrafo que contiene todos los enlaces */
 .foot nav p, 
 .footer nav p {
     display: flex;
@@ -353,7 +370,6 @@ h3 {
     max-width: 680px;
 }
 
-/* Enlaces del Footer */
 .foot nav a, 
 .footer nav a {
     font-family: "Riot Sans", Inter, sans-serif;
@@ -372,7 +388,6 @@ h3 {
     opacity: 0.75;
 }
 
-/* Contenedor de Redes Sociales (Rejilla 3x2) */
 .soc, 
 .social {
     display: grid;
@@ -396,7 +411,7 @@ h3 {
     width: 20px;
     height: 20px;
     object-fit: contain;
-    filter: brightness(0) invert(1); /* Fuerza a que los iconos sean blancos */
+    filter: brightness(0) invert(1);
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -406,7 +421,6 @@ h3 {
     transform: translateY(-1px);
 }
 
-/* Línea separadora */
 .foot hr, 
 .footer hr {
     grid-column: 1 / -1;
@@ -416,7 +430,6 @@ h3 {
     margin: 1.5rem 0 0.5rem;
 }
 
-/* Texto legal de cookies y derechos */
 .foot small, 
 .footer small {
     grid-column: 1 / -1;
@@ -431,26 +444,6 @@ h3 {
     font-weight: 400;
     opacity: 0.85;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ---------------------------------- */
 /* Adaptación Responsive             */

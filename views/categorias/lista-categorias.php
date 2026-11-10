@@ -3,7 +3,9 @@
     <div class="tiles">
         <?php foreach ($categorias as $categoria): ?>
             <a class="tile" href="#">
-                <img src="<?= url ?>img/carta-<?= htmlspecialchars($categoria->getSlug()) ?>.webp"
+
+                <!-- CAMBIAR LAS IMÁGENES -->
+                <img src="<?= url ?>img/Carta/Productos/Bebidas/Agua.png"
                      alt="<?= htmlspecialchars($categoria->getNombre()) ?>">
                 <span><?= htmlspecialchars($categoria->getNombre()) ?></span>
             </a>

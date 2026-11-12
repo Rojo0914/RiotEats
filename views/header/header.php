@@ -2,7 +2,7 @@
     <nav class="nav">
         
         <a href="../../index.php">
-            <img class="logo" src="<?php echo url ?>img/Logo/Logo-Blanco.png" alt="Riot Eats">
+            <img class="logo" src="<?php echo url ?>img/Logo/Logo-blanco.svg" alt="Riot Eats">
         </a>
         
         <a href="<?php echo url ?>/">

@@ -1,5 +1,5 @@
 <footer class="foot" id="">
-    <img class="logo" src="<?php echo url ?>/img/Logo/Logo-Blanco.png" alt="Riot Eats">
+    <img class="logo" src="<?php echo url ?>/img/Logo/Logo-blanco.svg" alt="Riot Eats">
     <nav>
         <p>
             <a href="#">PRENSA</a>

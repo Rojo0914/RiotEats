@@ -1,7 +1,6 @@
 <?php
 
-abstract class Producto
-{
+abstract class Producto {
     // Los nombres deben coincidir con las columnas de la tabla (productos)
     protected $id;
     protected $categoria_id;
@@ -17,8 +16,7 @@ abstract class Producto
      * fetch_object() rellena las propiedades ANTES de llamar al constructor.
      * Por eso no hay que pisarlas con valores vacíos cuando se instancia sin argumentos.
      */
-    public function __construct($nombre = null, $descripcion = null, $precio = null, $imagen = null)
-    {
+    public function __construct($nombre = null, $descripcion = null, $precio = null, $imagen = null) {
         if ($nombre !== null) {
             $this->nombre = $nombre;
         }
@@ -33,78 +31,64 @@ abstract class Producto
         }
     }
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
         return $this;
     }
 
-    public function getCategoriaId()
-    {
+    public function getCategoriaId() {
         return $this->categoria_id;
     }
 
-    public function getSku()
-    {
+    public function getSku() {
         return $this->sku;
     }
 
-    public function getSlug()
-    {
+    public function getSlug() {
         return $this->slug;
     }
 
-    public function getNombre()
-    {
+    public function getNombre() {
         return $this->nombre;
     }
 
-    public function setNombre($nombre)
-    {
+    public function setNombre($nombre) {
         $this->nombre = $nombre;
         return $this;
     }
 
-    public function getDescripcion()
-    {
+    public function getDescripcion() {
         return $this->descripcion;
     }
 
-    public function setDescripcion($descripcion)
-    {
+    public function setDescripcion($descripcion) {
         $this->descripcion = $descripcion;
         return $this;
     }
 
-    public function getPrecio()
-    {
+    public function getPrecio() {
         return $this->precio;
     }
 
-    public function setPrecio($precio)
-    {
+    public function setPrecio($precio) {
         $this->precio = $precio;
         return $this;
     }
 
-    public function getImagen()
-    {
+    public function getImagen() {
         return $this->imagen;
     }
 
-    public function setImagen($imagen)
-    {
+    public function setImagen($imagen) {
         $this->imagen = $imagen;
         return $this;
     }
 
-    public function isActivo()
-    {
+    public function isActivo() {
         return (bool) $this->activo;
     }
 }

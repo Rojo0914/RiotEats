@@ -6,8 +6,7 @@ include_once(__DIR__ . "/Postre.php");
 include_once(__DIR__ . "/Bebida.php");
 include_once(__DIR__ . "/Pack.php");
 
-class ProductoDAO
-{
+class ProductoDAO {
     // Clase hija que corresponde a cada categoría (slug de la tabla categorias)
     private const CLASES = [
         'packs' => 'Pack',
@@ -21,14 +20,12 @@ class ProductoDAO
     // Una categoría nueva (creada desde el formulario) todavía no tiene clase propia
     private const CLASE_POR_DEFECTO = 'Complemento';
 
-    private static function clase($slugCategoria)
-    {
+    private static function clase($slugCategoria) {
         return self::CLASES[$slugCategoria] ?? self::CLASE_POR_DEFECTO;
     }
 
     // Productos activos de una categoría activa (por su slug)
-    public static function getByCategoria($slug)
-    {
+    public static function getByCategoria($slug) {
         $con = DataBase::connect();
         $stmt = $con->prepare(
             "SELECT p.* FROM productos p
@@ -52,8 +49,7 @@ class ProductoDAO
         return $productos;
     }
 
-    public static function getById($id)
-    {
+    public static function getById($id) {
         $con = DataBase::connect();
 
         // 1) Averiguamos la categoría para saber qué clase hija instanciar
@@ -85,8 +81,7 @@ class ProductoDAO
     }
 
     // Imagen del primer producto de cada categoría: se usa como portada de la tarjeta en la Carta
-    public static function getPortadas()
-    {
+    public static function getPortadas() {
         $con = DataBase::connect();
         $result = $con->query(
             "SELECT c.slug,

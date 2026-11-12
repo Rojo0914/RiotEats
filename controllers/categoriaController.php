@@ -5,7 +5,10 @@ include_once("models/Categoria.php");
 class CategoriaController {
     public function index() {
         $categorias = CategoriaDAO::getAll();
-        $view = "views/categorias/lista-categorias.php";
+
+        $imagenPorDefecto = 'img/Carta/Tabla-Pizarra.png';
+
+        $view = "views/carta/carta.php";
         include_once 'views/main.php';
     }
 

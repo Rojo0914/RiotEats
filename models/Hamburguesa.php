@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Producto.php';
 
-class Hamburguesa extends Productos {
+class Hamburguesa extends Producto {
     public function getEtiquetaCategoria(): string {
         return "Hamburguesas";
     }

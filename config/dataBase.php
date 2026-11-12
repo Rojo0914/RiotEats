@@ -1,7 +1,6 @@
 <?php
 
-class DataBase
-{
+class DataBase {
     private const DB_HOST = '127.0.0.1';
     private const DB_USER = 'root';
     private const DB_PASS = 'ILRojo0914';

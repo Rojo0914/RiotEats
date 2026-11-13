@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Riot Eats</title>
-    <link rel="stylesheet" href="<?= url ?>styles.css?v=1.4">
+    <link rel="stylesheet" href="<?= url ?>styles.css?v=1.5">
 </head>
 <body>
 <div class="body">

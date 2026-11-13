@@ -136,6 +136,7 @@ h3 {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 50%; /* Baja un poco la imagen para que no corte el pan de arriba */
     opacity: .35;
 }
 
@@ -275,7 +276,7 @@ h3 {
 
 .tiles {
     display: grid;
-    grid-template-columns: repeat(3, 450px);
+    grid-template-columns: repeat(4, 325px);
     justify-content: start;
     padding: 0 105px; 
     gap: 55px 0; 
@@ -284,7 +285,7 @@ h3 {
 
 .tile {
     position: relative;
-    width: 450px;
+    width: 325px;
     height: 420px;
     clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
     transition: transform 0.3s ease, filter 0.3s ease;
@@ -317,21 +318,165 @@ h3 {
 }
 
 .burgers {
+    grid-template-columns: repeat(4, 325px);
+    justify-content: center;
+    padding: 0 20px;
     gap: 41px 0;
     margin-top: 100px;
 }
 
 .burgers .tile {
-    width: 250px;
+    width: 325px;
     height: 250px;
 }
 
 .burgers span {
-    width: 167px;
+    width: 280px;
+}
+
+.game-tag {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--red);
+    color: var(--white);
+    font: 700 10px/1 Inter, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 3;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .sect.b {
     padding-bottom: 131px;
+}
+
+/* ---------------------------------- */
+/* Vista Detalle y Extras del Producto*/
+/* ---------------------------------- */
+
+.hero-detalle {
+    height: auto;
+    min-height: 560px;
+    padding: 145px 105px 70px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-detalle > .bg {
+    object-position: 75% center;
+    opacity: 0.45;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.hero-detalle h1 {
+    margin: 0 0 28px 0;
+}
+
+.hero-detalle .desc {
+    max-width: 460px;
+    font: 700 18px/1.45 Inter, sans-serif;
+    color: var(--white);
+    margin-bottom: 55px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 45px;
+}
+
+.price-tag {
+    cursor: default;
+}
+
+.price-tag:hover {
+    background-color: var(--red);
+    border-color: var(--red);
+}
+
+.extras-grid {
+    grid-template-columns: repeat(4, 325px);
+    justify-content: center;
+    padding: 0 105px;
+    gap: 41px 20px;
+}
+
+.extra-card {
+    width: 325px;
+    height: 250px;
+}
+
+.extra-card span {
+    width: 185px;
+}
+
+.extra-price {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: 700 13px/1 Inter, sans-serif;
+    color: var(--white);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    z-index: 3;
+}
+
+.extra-controls {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    z-index: 3;
+}
+
+.extra-controls strong {
+    font: 700 22px/1 Inter, sans-serif;
+    color: var(--white);
+    min-width: 20px;
+    text-align: center;
+}
+
+.btn-qty {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(10, 10, 10, 0.65);
+    font: 700 20px/1 Inter, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.btn-qty:hover {
+    transform: scale(1.1);
+}
+
+.btn-qty.minus {
+    border: 2px solid var(--red);
+    color: var(--red);
+}
+
+.btn-qty.plus {
+    border: 2px solid #2ecc71;
+    color: #2ecc71;
 }
 
 /* ---------------------------------- */
@@ -457,7 +602,7 @@ h3 {
 }
 
 /* ---------------------------------- */
-/* Adaptación Responsive             */
+/* Adaptación Responsive              */
 /* ---------------------------------- */
 
 @media (max-width: 900px) {
@@ -483,6 +628,19 @@ h3 {
 
     .hero h1 {
         margin: 110px 0 0 34px;
+    }
+
+    .hero-detalle {
+        padding: 110px 34px 50px;
+    }
+
+    .hero-actions {
+        gap: 20px;
+    }
+
+    .extras-grid {
+        padding: 0 34px;
+        grid-template-columns: repeat(auto-fill, 250px);
     }
 }
 

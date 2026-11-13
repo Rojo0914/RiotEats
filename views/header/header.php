@@ -1,16 +1,16 @@
 <nav class="nav">
     <a href="../../index.php">
-        <img class="logo" src="<?php echo url ?>img/Logo/Logo-blanco.svg" alt="Riot Eats">
+        <img class="logo" src="<?= url ?>img/Logo/Logo-blanco.svg" alt="Riot Eats">
     </a>
     
-    <a href="<?php echo url ?>/">Carta</a>
-    <a href="">Promociones</a>
-    <a href="">Contáctanos</a>
+    <a href="<?= url ?>/">Carta</a>
+    <a href="<?= url ?>/promociones">Promociones</a>
+    <a href="<?= url ?>/contacto">Contáctanos</a>
 
-    <img src="<?php echo url ?>/img/svg/World.svg" alt="Idioma">
+    <img src="<?= url ?>/img/svg/World.svg" alt="Idioma">
     
     <a class="btn s" href="">
-        <img src="<?php echo url ?>img/svg/Carrito.svg" alt="" width="24" height="24">
+        <img src="<?= url ?>/img/svg/Carrito.svg" alt="" width="24" height="24">
         Carrito
     </a>
 </nav>

@@ -2,7 +2,7 @@
 include_once("models/CategoriaDAO.php");
 include_once("models/Categoria.php");
 
-class CategoriaController {
+class categoriaController {
     public function index() {
         $categorias = CategoriaDAO::getAll();
 

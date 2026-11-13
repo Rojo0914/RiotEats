@@ -18,22 +18,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 SET SESSION group_concat_max_len = 1000000;
 
--- ============================================================
--- 23. CONSULTAS DE COMPROBACIÓN (SELECT * DE CADA TABLA)
--- ============================================================
-
-SELECT * FROM usuarios;
-SELECT * FROM categorias;
-SELECT * FROM productos ORDER BY id ASC;
-SELECT * FROM ingredientes;
-SELECT * FROM producto_ingrediente;
-SELECT * FROM producto_combo;
-SELECT * FROM ofertas;
-SELECT * FROM oferta_producto;
-SELECT * FROM pedidos;
-SELECT * FROM pedido_detalle;
-SELECT * FROM pedido_detalle_ingrediente;
-
 SELECT GROUP_CONCAT(
     CONCAT('`', REPLACE(table_name,'`','``'), '`')
     SEPARATOR ','
@@ -82,6 +66,7 @@ CREATE TABLE categorias (
     nombre VARCHAR(100) UNIQUE NOT NULL,
     slug VARCHAR(150) UNIQUE NOT NULL,
     descripcion TEXT,
+    imagen VARCHAR(255),
     activa BOOLEAN NOT NULL DEFAULT TRUE
 ) ENGINE=InnoDB;
 
@@ -108,7 +93,7 @@ CREATE TABLE productos (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- 4. INGREDIENTES
+-- 4. INGREDIENTES (EXTRAS)
 -- ============================================================
 
 CREATE TABLE ingredientes (
@@ -116,6 +101,7 @@ CREATE TABLE ingredientes (
     sku VARCHAR(100) UNIQUE NOT NULL,
     nombre VARCHAR(100) UNIQUE NOT NULL,
     precio_extra DECIMAL(10,2) NOT NULL DEFAULT 0,
+    imagen VARCHAR(255),
     activo BOOLEAN NOT NULL DEFAULT TRUE,
 
     CHECK (precio_extra >= 0)
@@ -274,13 +260,13 @@ CREATE TABLE pedido_detalle_ingrediente (
 -- 12. INSERTAR CATEGORIAS
 -- ============================================================
 
-INSERT INTO categorias (nombre, slug, descripcion, activa) VALUES
-('Packs', 'packs', 'Combos y paquetes especiales', TRUE),
-('Complementos', 'complementos', 'Entrantes y acompañamientos', TRUE),
-('Hamburguesas', 'hamburguesas', 'Hamburguesas temáticas de Riot Games', TRUE),
-('Postres', 'postres', 'Postres dulces', TRUE),
-('Bebidas', 'bebidas', 'Refrescos y bebidas no alcohólicas', TRUE),
-('Bebidas con Alcohol', 'bebidas-con-alcohol', 'Cócteles y bebidas alcohólicas temáticas', TRUE);
+INSERT INTO categorias (nombre, slug, descripcion, imagen, activa) VALUES
+('Packs', 'packs', 'Combos y paquetes especiales', 'img/Carta/Productos/Packs/pack-noxus.webp', TRUE),
+('Complementos', 'complementos', 'Entrantes y acompañamientos', 'img/Carta/Productos/Complementos/tequenos.webp', TRUE),
+('Hamburguesas', 'hamburguesas', 'Hamburguesas temáticas de Riot Games', 'img/Carta/Productos/Hamburguesa-Sola/noxus.webp', TRUE),
+('Postres', 'postres', 'Postres dulces', 'img/Carta/Productos/Postres/crepe.webp', TRUE),
+('Bebidas', 'bebidas', 'Refrescos y bebidas no alcohólicas', 'img/Carta/Productos/Bebidas/agua.webp', TRUE),
+('Bebidas con Alcohol', 'bebidas-con-alcohol', 'Cócteles y bebidas alcohólicas temáticas', 'img/Carta/Productos/Bebidas-con-alcohol/Cocktails/red-buff.webp', TRUE);
 
 -- ============================================================
 -- 13. INSERTAR PRODUCTOS
@@ -291,94 +277,94 @@ SELECT c.id, d.sku, d.slug, d.nombre, d.descripcion, d.precio, d.imagen, d.activ
 FROM categorias c
 JOIN (
     -- HAMBURGUESAS: LEAGUE OF LEGENDS (4)
-    SELECT 'hamburguesas' categoria, 'RE-HAM-NOXUS' sku, 'noxus' slug, 'Noxus' nombre, 'Carne de vacuno, cheddar y bacon' descripcion, 11.90 precio, 'img/productos/noxus.webp' imagen, TRUE activo
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ZAUN', 'zaun', 'Zaun', 'Carne de vacuno, cheddar, bacon y jalapeños', 12.90, 'img/productos/zaun.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-PILTOVER', 'piltover', 'Piltover', 'Carne de vacuno, cheddar, lechuga y tomate', 13.50, 'img/productos/piltover.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ALISTAR', 'hamburguesa-alistar', 'Hamburguesa Alistar', 'Doble carne de búfalo con queso gouda y cebolla crujiente', 16.90, 'img/productos/alistar.webp', TRUE
+    SELECT 'hamburguesas' categoria, 'RE-HAM-NOXUS' sku, 'noxus' slug, 'Noxus' nombre, 'Carne de vacuno, cheddar y bacon' descripcion, 11.90 precio, 'img/Carta/Productos/Hamburguesa-Sola/noxus.webp' imagen, TRUE activo
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ZAUN', 'zaun', 'Zaun', 'Carne de vacuno, cheddar, bacon y jalapeños', 12.90, 'img/Carta/Productos/Hamburguesa-Sola/zaun.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-PILTOVER', 'piltover', 'Piltover', 'Carne de vacuno, cheddar, lechuga y tomate', 13.50, 'img/Carta/Productos/Hamburguesa-Sola/piltover.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ALISTAR', 'hamburguesa-alistar', 'Hamburguesa Alistar', 'Doble carne de búfalo con queso gouda y cebolla crujiente', 16.90, 'img/Carta/Productos/Hamburguesa-Sola/alistar.webp', TRUE
 
     -- HAMBURGUESAS: VALORANT (4)
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-BIND', 'bind', 'Bind', 'Carne de vacuno, cheddar, cebolla crujiente, pepinillos y bacon caramelizado', 13.50, 'img/productos/bind.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-HAVEN', 'haven', 'Haven', 'Pollo crujiente, lechuga, mayonesa picante y cheddar', 12.90, 'img/productos/haven.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ASCENT', 'ascent', 'Ascent', 'Carne de vacuno, queso provolone, mermelada de bacon y salsa especial', 13.90, 'img/productos/ascent.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-SPLIT', 'split', 'Split', 'Doble carne de vacuno, doble cheddar, cebolla caramelizada y salsa BBQ', 14.50, 'img/productos/split.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-BIND', 'bind', 'Bind', 'Carne de vacuno, cheddar, cebolla crujiente, pepinillos y bacon caramelizado', 13.50, 'img/Carta/Productos/Hamburguesa-Sola/bind.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-HAVEN', 'haven', 'Haven', 'Pollo crujiente, lechuga, mayonesa picante y cheddar', 12.90, 'img/Carta/Productos/Hamburguesa-Sola/haven.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ASCENT', 'ascent', 'Ascent', 'Carne de vacuno, queso provolone, mermelada de bacon y salsa especial', 13.90, 'img/Carta/Productos/Hamburguesa-Sola/ascent.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-SPLIT', 'split', 'Split', 'Doble carne de vacuno, doble cheddar, cebolla caramelizada y salsa BBQ', 14.50, 'img/Carta/Productos/Hamburguesa-Sola/split.webp', TRUE
 
     -- HAMBURGUESAS: 2XKO (4)
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-TAG-TEAM', 'tag-team', 'Tag Team', 'Doble carne picante, queso pepper jack y bacon ahumado', 14.90, 'img/productos/tag-team.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-KO-PUNCH', 'ko-punch', 'KO Punch', 'Pollo empanado estilo frito, pepinillos y salsa buffalo', 12.50, 'img/productos/ko-punch.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ASSIST', 'assist', 'Assist', 'Hamburguesa de ternera con huevo frito, cheddar y salsa secreta', 13.20, 'img/productos/assist.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-COUNTER', 'counter', 'Counter', 'Carne de vacuno, guacamole, jalapeños y queso fundido', 13.80, 'img/productos/counter.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-TAG-TEAM', 'tag-team', 'Tag Team', 'Doble carne picante, queso pepper jack y bacon ahumado', 14.90, 'img/Carta/Productos/Hamburguesa-Sola/tag-team.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-KO-PUNCH', 'ko-punch', 'KO Punch', 'Pollo empanado estilo frito, pepinillos y salsa buffalo', 12.50, 'img/Carta/Productos/Hamburguesa-Sola/ko-punch.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-ASSIST', 'assist', 'Assist', 'Hamburguesa de ternera con huevo frito, cheddar y salsa secreta', 13.20, 'img/Carta/Productos/Hamburguesa-Sola/assist.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-COUNTER', 'counter', 'Counter', 'Carne de vacuno, guacamole, jalapeños y queso fundido', 13.80, 'img/Carta/Productos/Hamburguesa-Sola/counter.webp', TRUE
 
     -- HAMBURGUESAS: TFT (4)
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-PENGU', 'pengu', 'Pengu', 'Hamburguesa estilo smash con doble cheddar y pepinillos', 11.50, 'img/productos/pengu.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-CHIBI', 'chibi', 'Chibi', 'Hamburguesa individual con queso cheddar y bacon', 10.50, 'img/productos/chibi.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-CAROUSEL', 'carousel', 'Carousel', 'Carne de vacuno, aros de cebolla, bacon y queso gouda', 13.90, 'img/productos/carousel.webp', TRUE
-    UNION ALL SELECT 'hamburguesas', 'RE-HAM-HYPERROLL', 'hyperroll', 'Hyperroll', 'Triple carne smash, triple cheddar y bacon ahumado', 15.90, 'img/productos/hyperroll.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-PENGU', 'pengu', 'Pengu', 'Hamburguesa estilo smash con doble cheddar y pepinillos', 11.50, 'img/Carta/Productos/Hamburguesa-Sola/pengu.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-CHIBI', 'chibi', 'Chibi', 'Hamburguesa individual con queso cheddar y bacon', 10.50, 'img/Carta/Productos/Hamburguesa-Sola/chibi.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-CAROUSEL', 'carousel', 'Carousel', 'Carne de vacuno, aros de cebolla, bacon y queso gouda', 13.90, 'img/Carta/Productos/Hamburguesa-Sola/carousel.webp', TRUE
+    UNION ALL SELECT 'hamburguesas', 'RE-HAM-HYPERROLL', 'hyperroll', 'Hyperroll', 'Triple carne smash, triple cheddar y bacon ahumado', 15.90, 'img/Carta/Productos/Hamburguesa-Sola/hyperroll.webp', TRUE
 
     -- COMPLEMENTOS (4)
-    UNION ALL SELECT 'complementos', 'RE-ACC-TEQUENOS', 'tequenos', 'Tequeños', 'Tequeños rellenos de queso fundido', 6.50, 'img/productos/tequenos.webp', TRUE
-    UNION ALL SELECT 'complementos', 'RE-ACC-NACHOS', 'nachos', 'Nachos', 'Nachos con queso, guacamole y jalapeños', 7.50, 'img/productos/nachos.webp', TRUE
-    UNION ALL SELECT 'complementos', 'RE-ACC-PATATAS', 'patatas-fritas', 'Patatas Fritas', 'Ración de patatas fritas crujientes', 3.50, 'img/productos/patatas.webp', TRUE
-    UNION ALL SELECT 'complementos', 'RE-ACC-AROS-CEBOLLA', 'aros-cebolla', 'Aros de Cebolla', 'Aros de cebolla rebozados', 4.90, 'img/productos/aros-cebolla.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-TEQUENOS', 'tequenos', 'Tequeños', 'Tequeños rellenos de queso fundido', 6.50, 'img/Carta/Productos/Complementos/tequenos.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-NACHOS', 'nachos', 'Nachos', 'Nachos con queso, guacamole y jalapeños', 7.50, 'img/Carta/Productos/Complementos/nachos.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-PATATAS', 'patatas-fritas', 'Patatas Fritas', 'Ración de patatas fritas crujientes', 3.50, 'img/Carta/Productos/Complementos/patatas-fritas.webp', TRUE
+    UNION ALL SELECT 'complementos', 'RE-ACC-AROS-CEBOLLA', 'aros-cebolla', 'Aros de Cebolla', 'Aros de cebolla rebozados', 4.90, 'img/Carta/Productos/Complementos/aros-cebolla.webp', TRUE
 
-    -- POSTRES (4)
-    UNION ALL SELECT 'postres', 'RE-POS-CREPES', 'crepes', 'Crepes', 'Crepes rellenos de chocolate', 4.50, 'img/productos/crepes.webp', TRUE
-    UNION ALL SELECT 'postres', 'RE-POS-HELADO-VAINILLA', 'helado-vainilla', 'Helado de Vainilla', 'Tina de helado sabor vainilla', 3.90, 'img/productos/helado-vainilla.webp', TRUE
-    UNION ALL SELECT 'postres', 'RE-POS-COULANT', 'coulant', 'Coulant', 'Coulant de chocolate con corazón fundido', 4.90, 'img/productos/coulant.webp', TRUE
-    UNION ALL SELECT 'postres', 'RE-POS-CHEESECAKE', 'cheesecake', 'Cheesecake', 'Tarta de queso estilo New York', 4.90, 'img/productos/cheesecake.webp', TRUE
+    -- POSTRES (5)
+    UNION ALL SELECT 'postres', 'RE-POS-HYPER-CHEESECAKE', 'hyper-cheesecake', 'Hyper Cheesecake', 'Tarta de queso cremosa con frutos rojos', 4.90, 'img/Carta/Productos/Postres/hyper-cheesecake.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-PORO-SNACK', 'poro-snack', 'Poro Snack', 'Galleta gigante temática de Poro con miel y pepitas de chocolate', 4.50, 'img/Carta/Productos/Postres/poro-snack.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-BARON-CAKE', 'baron-cake', 'Baron Cake', 'Coulant de chocolate fundido con bola de helado de vainilla', 5.20, 'img/Carta/Productos/Postres/baron-cake.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-CHIBI-PANCAKE', 'chibi-pancake', 'Chibi Pancake', 'Torre de tortitas esponjosas con nata, frutos del bosque y sirope', 4.90, 'img/Carta/Productos/Postres/chibi-pancake.webp', TRUE
+    UNION ALL SELECT 'postres', 'RE-POS-CREPE', 'crepe', 'Crepe', 'Crepe relleno con chocolate fundido, fresas y helado', 4.50, 'img/Carta/Productos/Postres/crepe.webp', TRUE
 
     -- BEBIDAS NO ALCOHÓLICAS (8)
-    UNION ALL SELECT 'bebidas', 'RE-BEB-AGUA', 'agua', 'Agua', 'Agua mineral 50cl', 1.50, 'img/productos/agua.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-COCACOLA', 'coca-cola', 'Coca-Cola', 'Refresco Coca-Cola 33cl', 2.50, 'img/productos/cocacola.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-NESTEA', 'nestea', 'Nestea', 'Té frío al limón 33cl', 2.50, 'img/productos/nestea.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-FANTA-NARANJA', 'fanta-naranja', 'Fanta Naranja', 'Refresco de naranja 33cl', 2.50, 'img/productos/fanta-naranja.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-FANTA-LIMON', 'fanta-limon', 'Fanta Limón', 'Refresco de limón 33cl', 2.50, 'img/productos/fanta-limon.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-SPRITE', 'sprite', 'Sprite', 'Refresco de lima-limón 33cl', 2.50, 'img/productos/sprite.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-AQUARIUS', 'aquarius', 'Aquarius', 'Bebida isotónica 33cl', 2.50, 'img/productos/aquarius.webp', TRUE
-    UNION ALL SELECT 'bebidas', 'RE-BEB-MONSTER', 'monster', 'Monster Energy', 'Bebida energética 50cl', 3.50, 'img/productos/monster.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-AGUA', 'agua', 'Agua', 'Agua mineral 50cl', 1.50, 'img/Carta/Productos/Bebidas/agua.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-COCACOLA', 'coca-cola', 'Coca-Cola', 'Refresco Coca-Cola 33cl', 2.50, 'img/Carta/Productos/Bebidas/coca-cola.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-NESTEA', 'nestea', 'Nestea', 'Té frío al limón 33cl', 2.50, 'img/Carta/Productos/Bebidas/nestea.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-FANTA-NARANJA', 'fanta-naranja', 'Fanta Naranja', 'Refresco de naranja 33cl', 2.50, 'img/Carta/Productos/Bebidas/fanta-naranja.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-FANTA-LIMON', 'fanta-limon', 'Fanta Limón', 'Refresco de limón 33cl', 2.50, 'img/Carta/Productos/Bebidas/fanta-limon.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-SPRITE', 'sprite', 'Sprite', 'Refresco de lima-limón 33cl', 2.50, 'img/Carta/Productos/Bebidas/sprite.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-AQUARIUS', 'aquarius', 'Aquarius', 'Bebida isotónica 33cl', 2.50, 'img/Carta/Productos/Bebidas/aquarius.webp', TRUE
+    UNION ALL SELECT 'bebidas', 'RE-BEB-MONSTER', 'monster', 'Monster Energy', 'Bebida energética 50cl', 3.50, 'img/Carta/Productos/Bebidas/monster.webp', TRUE
 
     -- BEBIDAS CON ALCOHOL (5)
-    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-RED-BUFF', 'red-buff', 'Red Buff', 'Cóctel a base de vodka y bebidas rojas', 7.50, 'img/productos/red-buff.webp', TRUE
-    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-BLUE-BUFF', 'blue-buff', 'Blue Buff', 'Cóctel azul con ginebra y curacao', 7.50, 'img/productos/blue-buff.webp', TRUE
-    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-VOID', 'void', 'Void', 'Cóctel místico con ron y frutos negros', 8.00, 'img/productos/void.webp', TRUE
-    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-SPIKE', 'spike-drink', 'Spike', 'Chupete/Combinado potente de la casa', 6.50, 'img/productos/spike-drink.webp', TRUE
-    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-YASUO', 'yasuo', 'Yasuo', 'Combinado de sake con toque cítrico', 7.00, 'img/productos/yasuo.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-RED-BUFF', 'red-buff', 'Red Buff', 'Cóctel a base de vodka y bebidas rojas', 7.50, 'img/Carta/Productos/Bebidas-con-alcohol/Cocktails/red-buff.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-BLUE-BUFF', 'blue-buff', 'Blue Buff', 'Cóctel azul con ginebra y curacao', 7.50, 'img/Carta/Productos/Bebidas-con-alcohol/Cocktails/blue-buff.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-VOID', 'void', 'Void', 'Cóctel místico con ron y frutos negros', 8.00, 'img/Carta/Productos/Bebidas-con-alcohol/Cocktails/void.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-SPIKE', 'spike-drink', 'Spike', 'Chupete/Combinado potente de la casa', 6.50, 'img/Carta/Productos/Bebidas-con-alcohol/Cocktails/spike.webp', TRUE
+    UNION ALL SELECT 'bebidas-con-alcohol', 'RE-ALC-YASUO', 'yasuo', 'Yasuo', 'Combinado de sake con toque cítrico', 7.00, 'img/Carta/Productos/Bebidas-con-alcohol/Cocktails/yasuo.webp', TRUE
 
     -- PACKS (5)
-    UNION ALL SELECT 'packs', 'RE-PAK-NOXUS', 'pack-noxus', 'Pack Noxus', 'Hamburguesa LoL + Patatas Fritas + Bebida', 15.90, 'img/productos/pack-noxus.webp', TRUE
-    UNION ALL SELECT 'packs', 'RE-PAK-CLUTCH', 'pack-clutch', 'Pack Clutch', 'Hamburguesa Valorant + Patatas Fritas + Bebida', 16.50, 'img/productos/pack-clutch.webp', TRUE
-    UNION ALL SELECT 'packs', 'RE-PAK-FLEX', 'pack-flex', 'Pack Flex', '5 Hamburguesas LoL + 5 Patatas Fritas + 5 Bebidas', 69.90, 'img/productos/pack-flex.webp', TRUE
-    UNION ALL SELECT 'packs', 'RE-PAK-2XKO', 'pack-2xko', 'Pack 2XKO', 'Hamburguesa 2XKO + Patatas + Complemento + Bebida + Helado', 22.90, 'img/productos/pack-2xko.webp', TRUE
-    UNION ALL SELECT 'packs', 'RE-PAK-CARDS', 'pack-cards', 'Pack Cards', 'Hamburguesa TFT + Patatas Fritas + Bebida', 14.90, 'img/productos/pack-cards.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-NOXUS', 'pack-noxus', 'Pack Noxus', 'Hamburguesa LoL + Patatas Fritas + Bebida', 15.90, 'img/Carta/Productos/Packs/pack-noxus.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-CLUTCH', 'pack-clutch', 'Pack Clutch', 'Hamburguesa Valorant + Patatas Fritas + Bebida', 16.50, 'img/Carta/Productos/Packs/pack-clutch.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-FLEX', 'pack-flex', 'Pack Flex', '5 Hamburguesas LoL + 5 Patatas Fritas + 5 Bebidas', 69.90, 'img/Carta/Productos/Packs/pack-flex.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-2XKO', 'pack-2xko', 'Pack 2XKO', 'Hamburguesa 2XKO + Patatas + Complemento + Bebida + Helado', 22.90, 'img/Carta/Productos/Packs/pack-2xko.webp', TRUE
+    UNION ALL SELECT 'packs', 'RE-PAK-CARDS', 'pack-cards', 'Pack Cards', 'Hamburguesa TFT + Patatas Fritas + Bebida', 14.90, 'img/Carta/Productos/Packs/pack-pingu.webp', TRUE
 
 ) d ON d.categoria = c.slug;
 
 -- ============================================================
--- 14. INGREDIENTES BASE
+-- 14. INGREDIENTES BASE (EXTRAS)
 -- ============================================================
 
-INSERT INTO ingredientes (sku, nombre, precio_extra, activo) VALUES
-('RE-ING-CARNE-VACUNO', 'Carne de vacuno', 3.50, TRUE),
-('RE-ING-CARNE-BUFALO', 'Carne de búfalo', 4.00, TRUE),
-('RE-ING-POLLO', 'Pollo crujiente', 3.00, TRUE),
-('RE-ING-PAN', 'Pan de hamburguesa', 0.00, TRUE),
-('RE-ING-CHEDDAR', 'Queso cheddar', 1.20, TRUE),
-('RE-ING-GOUDA', 'Queso gouda', 1.20, TRUE),
-('RE-ING-PEPPERJACK', 'Queso pepper jack', 1.30, TRUE),
-('RE-ING-PROVOLONE', 'Queso provolone', 1.50, TRUE),
-('RE-ING-BACON', 'Bacon', 1.50, TRUE),
-('RE-ING-BACON-CARAMELIZADO', 'Bacon caramelizado', 1.80, TRUE),
-('RE-ING-JALAPENOS', 'Jalapeños', 0.80, TRUE),
-('RE-ING-CEBOLLA-CRUJIENTE', 'Cebolla crujiente', 0.90, TRUE),
-('RE-ING-CEBOLLA-CARAMELIZADA', 'Cebolla caramelizada', 1.00, TRUE),
-('RE-ING-PEPINILLOS', 'Pepinillos', 0.50, TRUE),
-('RE-ING-LECHUGA', 'Lechuga', 0.30, TRUE),
-('RE-ING-TOMATE', 'Tomate', 0.30, TRUE),
-('RE-ING-HUEVO', 'Huevo frito', 1.20, TRUE),
-('RE-ING-GUACAMOLE', 'Guacamole', 1.50, TRUE),
-('RE-ING-AROS-CEBOLLA', 'Aros de cebolla', 1.20, TRUE),
-('RE-ING-SALSA-HAMBURGUESA', 'Salsa de hamburguesa', 0.50, TRUE),
-('RE-ING-SALSA-BBQ', 'Salsa BBQ', 0.50, TRUE),
-('RE-ING-SALSA-BUFFALO', 'Salsa Buffalo', 0.60, TRUE);
+INSERT INTO ingredientes (sku, nombre, precio_extra, imagen, activo) VALUES
+('RE-ING-AROS-CEBOLLA', 'Aros de cebolla', 1.20, 'img/Carta/Productos/Extras/aros-cebolla.webp', TRUE),
+('RE-ING-BACON-CARAMELIZADO', 'Bacon caramelizado', 1.80, 'img/Carta/Productos/Extras/bacon-caramelizado.webp', TRUE),
+('RE-ING-BACON', 'Bacon', 1.50, 'img/Carta/Productos/Extras/bacon.webp', TRUE),
+('RE-ING-CARNE-BUFALO', 'Carne de búfalo', 4.00, 'img/Carta/Productos/Extras/carne-bufalo.webp', TRUE),
+('RE-ING-CARNE-VACUNO', 'Carne de vacuno', 3.50, 'img/Carta/Productos/Extras/carne-vacuno.webp', TRUE),
+('RE-ING-CEBOLLA-CARAMELIZADA', 'Cebolla caramelizada', 1.00, 'img/Carta/Productos/Extras/cebolla-caramelizada.webp', TRUE),
+('RE-ING-CEBOLLA-CRUJIENTE', 'Cebolla crujiente', 0.90, 'img/Carta/Productos/Extras/cebolla-crujiente.webp', TRUE),
+('RE-ING-GUACAMOLE', 'Guacamole', 1.50, 'img/Carta/Productos/Extras/guacamole.webp', TRUE),
+('RE-ING-HUEVO-FRITO', 'Huevo frito', 1.20, 'img/Carta/Productos/Extras/huevo-frito.webp', TRUE),
+('RE-ING-JALAPENOS', 'Jalapeños', 0.80, 'img/Carta/Productos/Extras/jalapenos.webp', TRUE),
+('RE-ING-LECHUGA', 'Lechuga', 0.30, 'img/Carta/Productos/Extras/lechuga.webp', TRUE),
+('RE-ING-PEPINILLOS', 'Pepinillos', 0.50, 'img/Carta/Productos/Extras/pepinillos.webp', TRUE),
+('RE-ING-POLLO-CRUJIENTE', 'Pollo crujiente', 3.00, 'img/Carta/Productos/Extras/pollo-crujiente.webp', TRUE),
+('RE-ING-CHEDDAR', 'Queso cheddar', 1.20, 'img/Carta/Productos/Extras/queso-cheddar.webp', TRUE),
+('RE-ING-GOUDA', 'Queso gouda', 1.20, 'img/Carta/Productos/Extras/queso-gouda.webp', TRUE),
+('RE-ING-PEPPERJACK', 'Queso pepper jack', 1.30, 'img/Carta/Productos/Extras/queso-pepperjack.webp', TRUE),
+('RE-ING-PROVOLONE', 'Queso provolone', 1.50, 'img/Carta/Productos/Extras/queso-provolone.webp', TRUE),
+('RE-ING-SALSA-BBQ', 'Salsa BBQ', 0.50, 'img/Carta/Productos/Extras/salsa-bbq.webp', TRUE),
+('RE-ING-SALSA-BUFFALO', 'Salsa Buffalo', 0.60, 'img/Carta/Productos/Extras/salsa-buffalo.webp', TRUE),
+('RE-ING-SALSA-HAMBURGUESA', 'Salsa de hamburguesa', 0.50, 'img/Carta/Productos/Extras/salsa-burguer.webp', TRUE),
+('RE-ING-TOMATE', 'Tomate', 0.30, 'img/Carta/Productos/Extras/tomate.webp', TRUE);
 
 -- ============================================================
 -- 15. RECETAS DE HAMBURGUESAS (PRODUCTO_INGREDIENTE)
@@ -536,73 +522,6 @@ INSERT INTO pedido_detalle_ingrediente (pedido_detalle_id, ingrediente_id, nombr
 
 -- Re-activar verificación de llaves foráneas
 SET FOREIGN_KEY_CHECKS = 1;
-
--- ============================================================
--- ASIGNACIÓN DE IMÁGENES A TODOS LOS PRODUCTOS DE LA BBDD
--- ============================================================
-
--- 1. HAMBURGUESAS: LEAGUE OF LEGENDS
-UPDATE productos SET imagen = 'img/productos/noxus.webp' WHERE slug = 'noxus';
-UPDATE productos SET imagen = 'img/productos/zaun.webp' WHERE slug = 'zaun';
-UPDATE productos SET imagen = 'img/productos/piltover.webp' WHERE slug = 'piltover';
-UPDATE productos SET imagen = 'img/productos/alistar.webp' WHERE slug = 'hamburguesa-alistar';
-
--- 2. HAMBURGUESAS: VALORANT
-UPDATE productos SET imagen = 'img/productos/bind.webp' WHERE slug = 'bind';
-UPDATE productos SET imagen = 'img/productos/haven.webp' WHERE slug = 'haven';
-UPDATE productos SET imagen = 'img/productos/ascent.webp' WHERE slug = 'ascent';
-UPDATE productos SET imagen = 'img/productos/split.webp' WHERE slug = 'split';
-
--- 3. HAMBURGUESAS: 2XKO
-UPDATE productos SET imagen = 'img/productos/tag-team.webp' WHERE slug = 'tag-team';
-UPDATE productos SET imagen = 'img/productos/ko-punch.webp' WHERE slug = 'ko-punch';
-UPDATE productos SET imagen = 'img/productos/assist.webp' WHERE slug = 'assist';
-UPDATE productos SET imagen = 'img/productos/counter.webp' WHERE slug = 'counter';
-
--- 4. HAMBURGUESAS: TFT
-UPDATE productos SET imagen = 'img/productos/pengu.webp' WHERE slug = 'pengu';
-UPDATE productos SET imagen = 'img/productos/chibi.webp' WHERE slug = 'chibi';
-UPDATE productos SET imagen = 'img/productos/carousel.webp' WHERE slug = 'carousel';
-UPDATE productos SET imagen = 'img/productos/hyperroll.webp' WHERE slug = 'hyperroll';
-
--- 5. COMPLEMENTOS
-UPDATE productos SET imagen = 'img/productos/tequenos.webp' WHERE slug = 'tequenos';
-UPDATE productos SET imagen = 'img/productos/nachos.webp' WHERE slug = 'nachos';
-UPDATE productos SET imagen = 'img/productos/patatas.webp' WHERE slug = 'patatas-fritas';
-UPDATE productos SET imagen = 'img/productos/aros-cebolla.webp' WHERE slug = 'aros-cebolla';
-
--- 6. POSTRES
-UPDATE productos SET imagen = 'img/productos/crepes.webp' WHERE slug = 'crepes';
-UPDATE productos SET imagen = 'img/productos/helado-vainilla.webp' WHERE slug = 'helado-vainilla';
-UPDATE productos SET imagen = 'img/productos/coulant.webp' WHERE slug = 'coulant';
-UPDATE productos SET imagen = 'img/productos/cheesecake.webp' WHERE slug = 'cheesecake';
-
--- 7. BEBIDAS NO ALCOHÓLICAS
-UPDATE productos SET imagen = 'img/productos/agua.webp' WHERE slug = 'agua';
-UPDATE productos SET imagen = 'img/productos/cocacola.webp' WHERE slug = 'coca-cola';
-UPDATE productos SET imagen = 'img/productos/nestea.webp' WHERE slug = 'nestea';
-UPDATE productos SET imagen = 'img/productos/fanta-naranja.webp' WHERE slug = 'fanta-naranja';
-UPDATE productos SET imagen = 'img/productos/fanta-limon.webp' WHERE slug = 'fanta-limon';
-UPDATE productos SET imagen = 'img/productos/sprite.webp' WHERE slug = 'sprite';
-UPDATE productos SET imagen = 'img/productos/aquarius.webp' WHERE slug = 'aquarius';
-UPDATE productos SET imagen = 'img/productos/monster.webp' WHERE slug = 'monster';
-
--- 8. BEBIDAS CON ALCOHOL
-UPDATE productos SET imagen = 'img/productos/red-buff.webp' WHERE slug = 'red-buff';
-UPDATE productos SET imagen = 'img/productos/blue-buff.webp' WHERE slug = 'blue-buff';
-UPDATE productos SET imagen = 'img/productos/void.webp' WHERE slug = 'void';
-UPDATE productos SET imagen = 'img/productos/spike-drink.webp' WHERE slug = 'spike-drink';
-UPDATE productos SET imagen = 'img/productos/yasuo.webp' WHERE slug = 'yasuo';
-
--- 9. PACKS / COMBOS
-UPDATE productos SET imagen = 'img/productos/pack-noxus.webp' WHERE slug = 'pack-noxus';
-UPDATE productos SET imagen = 'img/productos/pack-clutch.webp' WHERE slug = 'pack-clutch';
-UPDATE productos SET imagen = 'img/productos/pack-flex.webp' WHERE slug = 'pack-flex';
-UPDATE productos SET imagen = 'img/productos/pack-2xko.webp' WHERE slug = 'pack-2xko';
-UPDATE productos SET imagen = 'img/productos/pack-cards.webp' WHERE slug = 'pack-cards';
-
--- Comprobación: Muestra el nombre y la imagen de todos los productos
-SELECT id, nombre, slug, imagen FROM productos ORDER BY id ASC;
 
 -- ============================================================
 -- 23. CONSULTAS DE COMPROBACIÓN (SELECT * DE CADA TABLA)

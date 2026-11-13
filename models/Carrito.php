@@ -1,11 +1,6 @@
 <?php
 include_once(__DIR__ . "/ProductoDAO.php");
 
-/**
- * Carrito guardado en la sesión: $_SESSION['carrito'] = [id_producto => cantidad].
- * Solo se guardan ids y cantidades; nombre y precio se leen siempre de la BBDD.
- * Cuando se confirme el pedido se copiará a las tablas pedidos / pedido_detalle.
- */
 class Carrito
 {
     const MAX_UNIDADES = 20;

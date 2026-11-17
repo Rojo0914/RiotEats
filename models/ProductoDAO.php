@@ -122,5 +122,44 @@ class ProductoDAO {
     $con->close();
 
     return $extras;
-}
+
+   }
+
+    public static function getByCategoriaSlug($slug, $orden = 'ASC', $limite = null) {
+
+        $con = DataBase::connect();
+
+        $dir = (strtoupper($orden) === "DESC") ? "DESC" : "ASC";
+        
+        $sql = (
+                "SELECT p.* FROM productos p 
+                JOIN categorias c ON c.id = p.categoria_id 
+                WHERE c.slug = ? AND c.activa = 1 
+                AND p.activo = 1 ORDER BY p.id $dir"
+            );
+
+        if ($limite !== null) {
+            $sql .= " LIMIT " . (int) $limite;
+        }
+
+        $stmt = $con->prepare($sql);
+
+        $stmt->bind_param("s", $slug);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $clase = self::clase($slug);
+        $productos = [];
+
+        while ($producto = $result->fetch_object($clase)) {
+            $productos[] = $producto;
+        }
+
+        $stmt->close();
+        $con->close();
+
+        return $productos;
+    }
+   
 }

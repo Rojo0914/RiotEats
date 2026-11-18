@@ -161,5 +161,37 @@ class ProductoDAO {
 
         return $productos;
     }
+
+
+
+
+
+
+    public static function getAllJson() {
+        
+        $con = DataBase::connect();
+        $stmt = $con->prepare(
+            "SELECT p.*, c.slug AS categoria_slug 
+             FROM productos p
+             JOIN categorias c ON c.id = p.categoria_id
+             WHERE c.activa = 1 AND p.activo = 1
+             ORDER BY p.id"
+        );
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $productos = [];
+        if($result) {
+            while ($fila = $result->fetch_assoc()) {
+                $productos[] = $fila;
+            }
+        }
+        
+
+        $stmt->close();
+        $con->close();
+
+        return $productos;
+    }
    
 }

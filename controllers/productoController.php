@@ -17,6 +17,50 @@ class ProductoController {
         include_once("views/main.php");
     }
 
+    public function api() {
+        $metodo = $_SERVER['REQUEST_METHOD'];
+
+        if($metodo == "GET") {
+            $productos = ProductoDAO::getAllJson();
+            echo json_encode($productos);    
+        } else if($metodo == "DELETE") {
+            $datos = json_decode(file_get_contents("php://input"), true);
+            echo $datos;
+        }
+
+        // switch ($metodo) {
+            // case 'GET':
+                // if($_GET['funcion'] == "getById") {
+
+                // }
+                // if($_GET['funcion'] == "getAllJson") {
+                //     echo ProductoDAO::getAllJson();
+                // }
+
+                // break;
+            // case 'POST':
+
+
+                // break;
+            // case 'PUT':
+
+
+                // break;
+            // case 'DELETE':
+
+
+                // break;
+            // default:
+            //     break;
+        // }
+
+        // get = consultar
+        // post = enviar / crear
+        // put = reemplazar
+        // patch = editar parcialmente
+        // delete = eliminar
+    }
+
     public function detalle() {
         if (!isset($_GET['id'])) {
             header("Location: " . url);

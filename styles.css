@@ -659,3 +659,384 @@ h3 {
         margin-left: auto;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ================= CONTENEDOR GENERAL HOME ================= */
+.home-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.home-section-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin: 0 0 28px 0;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+}
+
+/* ================= 1. HERO SUPERIOR ================= */
+.home-hero {
+    width: 100%;
+    height: 360px;
+    background-image: url('img/Carta/Tabla-Pizarra.webp');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.home-hero-overlay {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(17,17,17,0.85) 100%);
+}
+
+/* ================= 2. SECCIÓN PROMOCIONES ================= */
+.home-promociones {
+    background-color: #111111;
+    padding: 70px 0 80px 0;
+    color: #ffffff;
+}
+
+.home-promociones-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 50px;
+    align-items: end;
+}
+
+.home-promociones .home-section-title {
+    margin-bottom: 14px;
+}
+
+.promo-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #e0e0e0;
+    margin: 0 0 28px 0;
+}
+
+.promo-featured-card {
+    display: block;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.25s ease;
+}
+
+.promo-featured-card:hover {
+    transform: scale(1.02);
+}
+
+.promo-featured-card img {
+    width: 100%;
+    height: 295px;
+    object-fit: cover;
+    display: block;
+}
+
+.promo-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.promo-mini-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1c1c1c;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #ffffff;
+    height: 82px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.promo-mini-card:hover {
+    background-color: #272727;
+    transform: translateX(5px);
+}
+
+.promo-mini-info {
+    padding: 0 20px;
+}
+
+.promo-mini-info h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: #ffffff;
+}
+
+.promo-mini-info span {
+    font-size: 0.85rem;
+    color: #b5b5b5;
+}
+
+.promo-mini-img {
+    width: 150px;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+.promo-mini-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ================= 3. SECCIÓN COCKTAIL ================= */
+.home-cocktail {
+    background-color: #1a1a1a;
+    padding: 75px 0 60px 0;
+    overflow: hidden;
+}
+
+.cocktail-track {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    padding: 10px 20px 20px 20px;
+}
+
+.cocktail-card {
+    position: relative;
+    width: 245px;
+    height: 360px;
+    flex-shrink: 0;
+    transform: skewX(-7deg);
+    overflow: hidden;
+    text-decoration: none;
+    background-color: #111111;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cocktail-card:hover {
+    transform: skewX(-7deg) translateY(-8px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+}
+
+.cocktail-card-inner {
+    width: 120%;
+    height: 100%;
+    margin-left: -10%;
+    transform: skewX(7deg);
+    position: relative;
+}
+
+.cocktail-card-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.cocktail-card-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+}
+
+.cocktail-name {
+    position: absolute;
+    bottom: 20px;
+    left: 34px;
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    z-index: 2;
+}
+
+/* ================= 4. SECCIÓN CONOCE MÁS ================= */
+.home-conoce-mas {
+    background-color: #1a1a1a;
+    padding: 35px 0 85px 0;
+}
+
+.categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.categoria-skew-card {
+    position: relative;
+    height: 115px;
+    transform: skewX(-10deg);
+    overflow: hidden;
+    text-decoration: none;
+    background-color: #111111;
+    transition: transform 0.25s ease;
+}
+
+.categoria-skew-card:hover {
+    transform: skewX(-10deg) scale(1.04);
+}
+
+.categoria-skew-inner {
+    width: 120%;
+    height: 100%;
+    margin-left: -10%;
+    transform: skewX(10deg);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.categoria-skew-inner img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.categoria-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.52);
+    transition: background 0.25s ease;
+}
+
+.categoria-skew-card:hover .categoria-overlay {
+    background: rgba(0, 0, 0, 0.32);
+}
+
+.categoria-skew-inner span {
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* ================= 5. BANNER ¡BUSCAMOS GENTE! ================= */
+.home-buscamos {
+    display: flex;
+    width: 100%;
+    min-height: 410px;
+    background-color: #e4e4e4;
+    overflow: hidden;
+    position: relative;
+}
+
+.buscamos-left {
+    width: 55%;
+    background-color: #e4e4e4;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    z-index: 2;
+    clip-path: polygon(0 0, 100% 0, 84% 100%, 0% 100%);
+}
+
+.buscamos-content {
+    max-width: 410px;
+    margin-right: 40px;
+}
+
+.buscamos-content h2 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+    color: #111111;
+}
+
+.buscamos-content p {
+    font-size: 0.98rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #2b2b2b;
+    margin: 0 0 32px 0;
+}
+
+.btn-solicitar {
+    display: inline-block;
+    background-color: #cf3538;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 56px;
+    border-radius: 25px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-solicitar:hover {
+    background-color: #b5282b;
+    transform: translateY(-2px);
+}
+
+.buscamos-right {
+    width: 55%;
+    margin-left: -10%;
+    position: relative;
+    z-index: 1;
+}
+
+.buscamos-right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 960px) {
+    .home-promociones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .categorias-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cocktail-track {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-left: 30px;
+    }
+
+    .home-buscamos {
+        flex-direction: column;
+    }
+
+    .buscamos-left {
+        width: 100%;
+        clip-path: none;
+    }
+
+    .buscamos-content {
+        margin-right: 0;
+    }
+
+    .buscamos-right {
+        width: 100%;
+        height: 280px;
+        margin-left: 0;
+    }
+}

@@ -25,7 +25,10 @@ class ProductoController {
             echo json_encode($productos);    
         } else if($metodo == "DELETE") {
             $datos = json_decode(file_get_contents("php://input"), true);
-            echo $datos;
+            echo json_decode(file_get_contents("php://input"), true);
+        } else if($metodo == "POST") {
+            $datos = json_decode(file_get_contents("php://input"), true);
+
         }
 
         // switch ($metodo) {

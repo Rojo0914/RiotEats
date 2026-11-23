@@ -167,6 +167,7 @@ class ProductoDAO {
 
 
 
+    
     public static function getAllJson() {
         
         $con = DataBase::connect();

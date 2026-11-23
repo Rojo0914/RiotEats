@@ -14,12 +14,10 @@
                 <th>Imagen</th>
                 <th>Precio</th>
                 <th>Activo</th>
+                <th>Acciones</th>
             </thead>
             <tbody id="productos">
                 
             </tbody>
-
-
-
-    </table>
+        </table>
 <script src="views/admin/vistasAdministrador.js"></script>

@@ -18,17 +18,32 @@ class ProductoController {
     }
 
     public function api() {
-        $metodo = $_SERVER['REQUEST_METHOD'];
+        header('Content-Type: application/json; charset=utf-8');
 
-        if($metodo == "GET") {
+        // 1. Si piden los datos (GET), devolvemos todos los productos
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $productos = ProductoDAO::getAllJson();
-            echo json_encode($productos);    
-        } else if($metodo == "DELETE") {
-            $datos = json_decode(file_get_contents("php://input"), true);
-            echo json_decode(file_get_contents("php://input"), true);
-        } else if($metodo == "POST") {
+            echo json_encode($productos);
+            exit();
+        }
+
+        // 2. Si piden borrar (DELETE), leemos el ID enviado y llamamos al DAO
+        if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
             $datos = json_decode(file_get_contents("php://input"), true);
 
+            if (isset($datos['id']) && $datos['id'] != "") {
+                $id = (int) $datos['id'];
+                $borrado = ProductoDAO::eliminar($id);
+
+                if ($borrado) {
+                    echo json_encode(["ok" => true, "mensaje" => "Producto eliminado"]);
+                } else {
+                    echo json_encode(["ok" => false, "mensaje" => "No se encontró el ID o no se pudo borrar"]);
+                }
+            } else {
+                echo json_encode(["ok" => false, "mensaje" => "Falta el ID del producto"]);
+            }
+            exit();
         }
 
         // switch ($metodo) {

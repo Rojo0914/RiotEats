@@ -1,14 +1,5 @@
 class vistaAdministrador {
     constructor() {
-        this.enlaces = null;
-        this.secciones = null;
-        this.vista = null;
-        this.packs = null;
-        this.complementos = null;
-        this.bebidas = null;
-        this.hamburguesas = null;
-        this.postres = null;
-        this.usuarios = null;
         this.productos = [];
     }
 
@@ -16,88 +7,123 @@ class vistaAdministrador {
         fetch("http://localhost/RiotEats/?controller=producto&action=api")
             .then(response => response.json())
             .then(r => {
-
-                let respuesta = r;
-                respuesta.forEach(e => {
-                    this.productos.push(new Hamburguesas(e.nombre, e.slug, e.descripcion, e.imagen, e.precio, e.activa));
-                })
-
                 this.productos = r;
-                const tablaProductos = document.getElementById("productos");
+                const tablaProductos = document.getElementById("tablaProductos");
+                tablaProductos.innerHTML = "";
+
                 this.productos.forEach(producto => {
+                    const hamburguesa = new Hamburguesas(
+                        producto.id,
+                        producto.nombre,
+                        producto.slug,
+                        producto.descripcion,
+                        producto.imagen,
+                        producto.precio,
+                        producto.activo
+                    );
 
                     const tr = document.createElement("tr");
+
                     const td1 = document.createElement("td");
-                    td1.textContent = producto.id;
+                    td1.textContent = hamburguesa.id;
                     tr.append(td1);
 
                     const td2 = document.createElement("td");
-                    td2.textContent = producto.nombre;
+                    td2.textContent = hamburguesa.nombre;
                     tr.append(td2);
 
                     const td3 = document.createElement("td");
-                    td3.textContent = producto.descripcion;
+                    td3.textContent = hamburguesa.descripcion;
                     tr.append(td3);
 
                     const td4 = document.createElement("td");
-                    td4.textContent = producto.imagen;
+                    const img = document.createElement("img");
+                    img.src = hamburguesa.imagen;
+                    img.alt = hamburguesa.nombre;
+                    td4.append(img);
                     tr.append(td4);
 
                     const td5 = document.createElement("td");
-                    td5.textContent = producto.precio;
+                    td5.textContent = hamburguesa.precio + " €";
                     tr.append(td5);
 
                     const td6 = document.createElement("td");
-                    td6.textContent = producto.activa;
+                    td6.textContent = hamburguesa.activo == 1 ? "Sí" : "No";
                     tr.append(td6);
 
                     const td7 = document.createElement("td");
                     const botonEliminar = document.createElement("button");
                     botonEliminar.textContent = "Eliminar";
+                    botonEliminar.classList.add("btn-admin-danger");
                     td7.append(botonEliminar);
                     tr.append(td7);
 
                     botonEliminar.addEventListener("click", () => {
-                        producto.eliminar();
+                        hamburguesa.eliminar();
                     });
 
                     tablaProductos.append(tr);
-                })
+                });
             });
-
-        let admin = new vistaAdministrador();
-        admin.iniciar();
-
     }
 }
 
-const formularioEliminarProducto = document.getElementById("eliminarProducto");
-formularioEliminarProducto.addEventListener("submit", (e) => {
-    e.preventDefault();
-    console.log(e.target[0].value);
-    fetch("http://localhost/RiotEats/?controller=producto&action=api"), {
-        method: "DELETE",
-        body: JSON.stringify(id),
-    }
-})
-
 class Hamburguesas {
-    constructor(nombre, slug, descripcion, imagen, precio, activa) {
+    constructor(id, nombre, slug, descripcion, imagen, precio, activo) {
+        this.id = id;
         this.nombre = nombre;
         this.slug = slug;
         this.descripcion = descripcion;
         this.imagen = imagen;
         this.precio = precio;
-        this.activa = activa;
+        this.activo = activo;
     }
 
-    eliminar(id) {
-        console.log("Eliminando hamburguesa con ID: " + (id));
+    eliminar() {
+        if (!confirm("¿Seguro que quieres eliminar " + this.nombre + "?")) {
+            return;
+        }
+
         fetch("http://localhost/RiotEats/?controller=producto&action=api", {
             method: "DELETE",
-            body: JSON.stringify(this.id)
-        }).then(r => r.json())
-        .then(r => console.log(r));
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: this.id })
+        })
+        .then(r => r.json())
+        .then(respuesta => {
+            if (respuesta.ok) {
+                location.reload();
+            } else {
+                alert("Error al eliminar: " + respuesta.mensaje);
+            }
+        });
     }
 }
 
+const formularioEliminarProducto = document.getElementById("formEliminarProducto");
+formularioEliminarProducto.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const id = document.getElementById("inputEliminarId").value.trim();
+
+    if (id === "") {
+        alert("Escribe un ID primero.");
+        return;
+    }
+
+    fetch("http://localhost/RiotEats/?controller=producto&action=api", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: id })
+    })
+    .then(r => r.json())
+    .then(respuesta => {
+        if (respuesta.ok) {
+            location.reload();
+        } else {
+            alert("Error: " + respuesta.mensaje);
+        }
+    });
+});
+
+const admin = new vistaAdministrador();
+admin.iniciar();

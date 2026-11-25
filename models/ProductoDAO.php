@@ -162,11 +162,27 @@ class ProductoDAO {
         return $productos;
     }
 
+    public static function eliminar($id) {
+        $con = DataBase::connect();
 
+        // 1. Primero borramos los ingredientes asociados a ese producto para que MySQL no bloquee el borrado
+        $stmtIng = $con->prepare("DELETE FROM producto_ingrediente WHERE producto_id = ?");
+        $stmtIng->bind_param("i", $id);
+        $stmtIng->execute();
+        $stmtIng->close();
 
+        // 2. Ahora borramos el producto de la tabla productos
+        $stmt = $con->prepare("DELETE FROM productos WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
 
+        $filasBorradas = $stmt->affected_rows;
 
+        $stmt->close();
+        $con->close();
 
+        return $filasBorradas > 0;
+    }
     
     public static function getAllJson() {
         

@@ -3,37 +3,44 @@ include_once(__DIR__ . "/../models/UsuarioDAO.php");
 
 class UsuarioController {
 
-    private function iniciarSesion() {
-        if (session_status() === PHP_SESSION_NONE) {
+    // 1. MOSTRAR EL FORMULARIO DE LOGIN
+    public function login() {
+        // Si la sesión no está iniciada, la iniciamos
+        if (!isset($_SESSION)) {
             session_start();
         }
-    }
 
-    // Muestra el formulario de Login (?controller=usuario&action=login)
-    public function login() {
-        $this->iniciarSesion();
-        $error = $_SESSION['auth_error'] ?? null;
-        unset($_SESSION['auth_error']);
+        // Si venimos de un fallo anterior, guardamos el error y lo borramos de la sesión
+        $error = "";
+        if (isset($_SESSION['error'])) {
+            $error = $_SESSION['error'];
+            unset($_SESSION['error']);
+        }
+
+        // Si venimos de registrarnos bien, guardamos el mensaje verde y lo borramos de la sesión
+        $exito = "";
+        if (isset($_SESSION['exito'])) {
+            $exito = $_SESSION['exito'];
+            unset($_SESSION['exito']);
+        }
 
         $view = __DIR__ . "/../views/usuario/login.php";
         include_once 'views/main.php';
     }
 
-    // Procesa el POST del Login (?controller=usuario&action=doLogin)
+    // 2. PROCESAR LOS DATOS CUANDO PULSAS "ENTRAR"
     public function doLogin() {
-        $this->iniciarSesion();
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: ?controller=usuario&action=login");
-            exit;
+        if (!isset($_SESSION)) {
+            session_start();
         }
 
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
         $usuario = UsuarioDAO::getByEmail($email);
 
-        if ($usuario && password_verify($password, $usuario->getPassword())) {
+        if ($usuario != null && password_verify($password, $usuario->getPassword())) {
+            
             $_SESSION['usuario'] = [
                 'id'     => $usuario->getId(),
                 'nombre' => $usuario->getNombre(),
@@ -41,90 +48,86 @@ class UsuarioController {
                 'rol'    => $usuario->getRol()
             ];
 
-            // Si es admin, lo mandamos directo al panel de administración
             if ($usuario->esAdmin()) {
                 header("Location: ?controller=admin&action=index");
             } else {
-                header("Location: ?controller=home");
+                header("Location: ?controller=home&action=index");
             }
-            exit;
-        }
+            exit();
 
-        $_SESSION['auth_error'] = "Email o contraseña incorrectos.";
-        header("Location: ?controller=usuario&action=login");
-        exit;
+        } else {
+            $_SESSION['error'] = "Email o contraseña incorrectos.";
+            header("Location: ?controller=usuario&action=login");
+            exit();
+        }
     }
 
-    // Muestra el formulario de Registro (?controller=usuario&action=register)
+    // 3. MOSTRAR EL FORMULARIO DE REGISTRO
     public function register() {
-        $this->iniciarSesion();
-        $error = $_SESSION['auth_error'] ?? null;
-        unset($_SESSION['auth_error']);
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+
+        $error = "";
+        if (isset($_SESSION['error'])) {
+            $error = $_SESSION['error'];
+            unset($_SESSION['error']);
+        }
 
         $view = __DIR__ . "/../views/usuario/register.php";
         include_once 'views/main.php';
     }
 
-    // Procesa el POST del Registro (?controller=usuario&action=doRegister)
+    // 4. PROCESAR LOS DATOS CUANDO PULSAS "REGISTRARSE"
     public function doRegister() {
-        $this->iniciarSesion();
+        if (!isset($_SESSION)) {
+            session_start();
+        }
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $nombre = $_POST['nombre'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $password2 = $_POST['password2'];
+        $telefono = $_POST['telefono'];
+        $direccion = $_POST['direccion'];
+        $fechaNacimiento = $_POST['fecha_nacimiento'];
+
+        if ($password != $password2) {
+            $_SESSION['error'] = "Las contraseñas no coinciden.";
             header("Location: ?controller=usuario&action=register");
-            exit;
+            exit();
         }
 
-        $nombre = trim($_POST['nombre'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $password2 = $_POST['password2'] ?? '';
-        $telefono = trim($_POST['telefono'] ?? '');
-        $direccion = trim($_POST['direccion'] ?? '');
-        $fechaNacimiento = $_POST['fecha_nacimiento'] ?? '';
-
-        if (empty($nombre) || empty($email) || empty($password)) {
-            $_SESSION['auth_error'] = "Rellena los campos obligatorios (nombre, email y contraseña).";
+        if (UsuarioDAO::getByEmail($email) != null) {
+            $_SESSION['error'] = "Ese correo electrónico ya está registrado.";
             header("Location: ?controller=usuario&action=register");
-            exit;
+            exit();
         }
 
-        if ($password !== $password2) {
-            $_SESSION['auth_error'] = "Las contraseñas no coinciden.";
+        $creado = UsuarioDAO::registrar($nombre, $email, $password, $telefono, $direccion, $fechaNacimiento);
+
+        if ($creado) {
+            $_SESSION['exito'] = "Cuenta creada correctamente. Ya puedes iniciar sesión.";
+            header("Location: ?controller=usuario&action=login");
+            exit();
+        } else {
+            $_SESSION['error'] = "Error al crear la cuenta.";
             header("Location: ?controller=usuario&action=register");
-            exit;
+            exit();
         }
-
-        if (UsuarioDAO::getByEmail($email)) {
-            $_SESSION['auth_error'] = "Ya existe una cuenta registrada con ese correo electrónico.";
-            header("Location: ?controller=usuario&action=register");
-            exit;
-        }
-
-        $nuevoId = UsuarioDAO::registrar($nombre, $email, $password, $telefono, $direccion, $fechaNacimiento);
-
-        if ($nuevoId) {
-            $_SESSION['usuario'] = [
-                'id'     => $nuevoId,
-                'nombre' => $nombre,
-                'email'  => $email,
-                'rol'    => 'usuario'
-            ];
-            header("Location: ?controller=home");
-            exit;
-        }
-
-        $_SESSION['auth_error'] = "Error al crear la cuenta. Inténtalo de nuevo.";
-        header("Location: ?controller=usuario&action=register");
-        exit;
     }
 
-    // Cerrar sesión (?controller=usuario&action=logout)
+    // 5. CERRAR SESIÓN
     public function logout() {
-        $this->iniciarSesion();
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+
         unset($_SESSION['usuario']);
         session_destroy();
-        header("Location: ?controller=home");
-        exit;
+
+        header("Location: ?controller=usuario&action=login");
+        exit();
     }
 }
 ?>

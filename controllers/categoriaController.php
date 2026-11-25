@@ -14,7 +14,7 @@ class categoriaController {
 
     public function crearCategoria() {
         $view = "views/categorias/crear-categorias.php";
-        include_once "/../views/categoria/crear.php";
+        include_once 'views/main.php';
     }
 
     // Recibe los datos del formulario POST y los guarda en la BD

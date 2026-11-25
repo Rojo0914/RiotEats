@@ -1,5 +1,5 @@
 <?php
 define("url", "http://localhost/RiotEats/");
-define("default_controller", "home");
-define("default_action", "index");
+define("default_controller", "usuario");
+define("default_action", "login");
 ?>

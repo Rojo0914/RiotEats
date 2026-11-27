@@ -1,4 +1,7 @@
 <?php
+
+// MIRAR PORQUE FALTAN COSAS
+
 include_once("models/ProductoDAO.php");
 
 class ProductoController {

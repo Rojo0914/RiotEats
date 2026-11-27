@@ -165,23 +165,36 @@ class ProductoDAO {
     public static function eliminar($id) {
         $con = DataBase::connect();
 
-        // 1. Primero borramos los ingredientes asociados a ese producto para que MySQL no bloquee el borrado
+        // 1. Borramos relaciones en producto_ingrediente (si existen)
         $stmtIng = $con->prepare("DELETE FROM producto_ingrediente WHERE producto_id = ?");
-        $stmtIng->bind_param("i", $id);
-        $stmtIng->execute();
-        $stmtIng->close();
+        if ($stmtIng) {
+            $stmtIng->bind_param("i", $id);
+            $stmtIng->execute();
+            $stmtIng->close();
+        }
 
-        // 2. Ahora borramos el producto de la tabla productos
+        // 2. Intentamos borrar el producto físicamente
         $stmt = $con->prepare("DELETE FROM productos WHERE id = ?");
         $stmt->bind_param("i", $id);
-        $stmt->execute();
-
+        $ejecutado = $stmt->execute();
         $filasBorradas = $stmt->affected_rows;
-
         $stmt->close();
+
+        if ($ejecutado && $filasBorradas > 0) {
+            $con->close();
+            return true;
+        }
+
+        // 3. Si MySQL impidió el DELETE por clave foránea (ej. está en un pack o pedido),
+        // lo desactivamos (borrado lógico) para que desaparezca de la carta y del panel
+        $stmtSoft = $con->prepare("UPDATE productos SET activo = 0 WHERE id = ?");
+        $stmtSoft->bind_param("i", $id);
+        $stmtSoft->execute();
+        $filasActualizadas = $stmtSoft->affected_rows;
+        $stmtSoft->close();
         $con->close();
 
-        return $filasBorradas > 0;
+        return $filasActualizadas > 0;
     }
     
     public static function getAllJson() {

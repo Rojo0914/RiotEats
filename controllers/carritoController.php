@@ -56,3 +56,5 @@ class carritoController {
         return isset($_POST[$campo]) && is_string($_POST[$campo]) ? trim($_POST[$campo]) : '';
     }
 }
+
+?>

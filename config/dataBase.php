@@ -23,3 +23,5 @@ class DataBase {
         return $con;
     }
 }
+
+?>

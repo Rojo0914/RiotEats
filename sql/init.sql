@@ -8,6 +8,7 @@ CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 USE riot_eats;
+UPDATE usuarios SET rol = 'admin' WHERE nombre = 'Rojo0914';
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

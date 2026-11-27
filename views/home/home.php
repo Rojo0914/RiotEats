@@ -1,39 +1,42 @@
 <!-- 1. HERO SUPERIOR -->
 <section class="home-hero">
+    <!-- <video autoplay muted loop playsinline class="hero-video">
+        <source src="<?= url ?>video/hero-riot-eats.mp4" type="video/mp4">
+    </video> -->
     <div class="home-hero-overlay"></div>
 </section>
 
 <!-- 2. SECCIÓN PROMOCIONES -->
 <section class="home-promociones">
     <div class="home-container home-promociones-grid">
-        
+
         <!-- Columna izquierda: Título, subtítulo y primer pack destacado -->
         <div class="promo-left">
             <h2 class="home-section-title">Promociones</h2>
             <p class="promo-subtitle">Mira nuestras mejores promociones //<br>para comer solo o acompañado</p>
 
-            <?php if (!empty($packs)): 
-                $packDestacado =$packs[0]; ?>
+            <?php if (!empty($packs)):
+                $packDestacado = $packs[0]; ?>
                 <a href="?controller=producto&action=detalle&id=<?= $packDestacado->getId() ?>" class="promo-featured-card">
-                    <img src="<?= htmlspecialchars($packDestacado->getImagen()) ?>" 
-                         alt="<?= htmlspecialchars($packDestacado->getNombre()) ?>">
+                    <img src="<?= htmlspecialchars($packDestacado->getImagen()) ?>"
+                        alt="<?= htmlspecialchars($packDestacado->getNombre()) ?>">
                 </a>
             <?php endif; ?>
         </div>
 
         <!-- Columna derecha: Los otros 4 packs apilados -->
         <div class="promo-right">
-            <?php 
+            <?php
             $otrosPacks = array_slice($packs, 1, 4);
-            foreach ($otrosPacks as$pack): ?>
+            foreach ($otrosPacks as $pack): ?>
                 <a href="?controller=producto&action=detalle&id=<?= $pack->getId() ?>" class="promo-mini-card">
                     <div class="promo-mini-info">
                         <h3><?= htmlspecialchars($pack->getNombre()) ?> //</h3>
                         <span><?= htmlspecialchars($pack->getDescripcion() ?? 'Combo especial') ?></span>
                     </div>
                     <div class="promo-mini-img">
-                        <img src="<?= htmlspecialchars($pack->getImagen()) ?>" 
-                             alt="<?= htmlspecialchars($pack->getNombre()) ?>">
+                        <img src="<?= htmlspecialchars($pack->getImagen()) ?>"
+                            alt="<?= htmlspecialchars($pack->getNombre()) ?>">
                     </div>
                 </a>
             <?php endforeach; ?>
@@ -50,11 +53,11 @@
 
     <div class="cocktail-track">
         <?php if (!empty($cock)): ?>
-            <?php foreach ($cock as$bebida): ?>
+            <?php foreach ($cock as $bebida): ?>
                 <a href="?controller=producto&action=detalle&id=<?= $bebida->getId() ?>" class="cocktail-card">
                     <div class="cocktail-card-inner">
-                        <img src="<?= htmlspecialchars($bebida->getImagen()) ?>" 
-                             alt="<?= htmlspecialchars($bebida->getNombre()) ?>">
+                        <img src="<?= htmlspecialchars($bebida->getImagen()) ?>"
+                            alt="<?= htmlspecialchars($bebida->getNombre()) ?>">
                         <div class="cocktail-card-gradient"></div>
                         <span class="cocktail-name"><?= htmlspecialchars($bebida->getNombre()) ?></span>
                     </div>

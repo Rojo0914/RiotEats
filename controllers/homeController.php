@@ -1,4 +1,5 @@
 <?php
+
 include_once(__DIR__ . "/../models/ProductoDAO.php");
 
 class HomeController {
@@ -10,4 +11,5 @@ class HomeController {
         include_once 'views/main.php';
     }
 }
+
 ?>

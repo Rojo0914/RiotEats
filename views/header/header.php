@@ -5,8 +5,7 @@
     
     <a href="<?= url ?>?controller=categoria&action=index">Carta</a>
     <a href="<?= url ?>?controller=promociones&action=index">Promociones</a>
-    <a href="<?= url ?>?controller=contacto&action=index">Contáctanos</a>
-
+    <a href="<?= url ?>index.php?controller=contacto&action=index">Contáctanos</a>
     <img src="<?= url ?>img/svg/World.svg" alt="Idioma">
     
     <a class="btn s" href="<?= url ?>?controller=carrito&action=index">

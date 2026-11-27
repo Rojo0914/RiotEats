@@ -56,3 +56,5 @@
     </section>
     <?php endif; ?>
 </form>
+
+<script src="<?= url ?>views/carta/productoExtras.js"></script>

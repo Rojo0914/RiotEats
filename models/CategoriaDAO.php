@@ -40,20 +40,5 @@ class CategoriaDAO {
 
         return $producto ?: null;
     }
-
-    public static function insertarCategoria($categoria) {
-    //     $con = DataBase::connect();
-    //     $stmt = $con->prepare("INSERT INTO camisetas (nombre, talla, precio) VALUES (?, ?, ?)");
-
-    //     $nombre = $producto->getNombre();
-    //     $talla = $producto->getTalla();
-    //     $precio = $producto->getPrecio();
-
-    //     $stmt->bind_param("ssd", $nombre, $talla, $precio);
-    //     $stmt->execute();
-
-    //     $stmt->close();
-    //     $con->close();
-    }
 }
 ?>
